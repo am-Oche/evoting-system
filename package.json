@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "docx": "^9.6.1",
+    "docxtemplater": "^3.68.7",
+    "docxtemplater-image-module-free": "^1.1.1",
+    "mammoth": "^1.12.0",
+    "marked": "^18.0.3",
+    "pizzip": "^3.2.0"
+  }
+}

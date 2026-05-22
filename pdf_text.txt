@@ -1,0 +1,1661 @@
+  
+ 
+DESIGN AND IMPLEMENTATION OF A BLOCKCHAIN FOR E-VOTING 
+USING NATIONAL IDENTIFICATION NUMBER (NIN) 
+ 
+ 
+BY 
+ 
+ 
+UGBAH-NDUKA DAVID KING 
+BHU/22/04/05/0078 
+ 
+ 
+ 
+A PROJECT DOCUMENTATION SUBMITTED TO THE DEPARTMENT OF 
+COMPUTER SCIENCE, FACULTY OF COMPUTING, 
+BINGHAM UNIVERSITY KARU, NASARAWA STATE NIGERIA 
+ 
+ 
+ 
+ 
+IN PARTIAL FULFILMEMT OF THE REQUIREMENTS OF THE AWARD OF 
+BACHELOR OF SCIENCE (B.Sc.) DEGREE IN COMPUTER SCIENCE 
+ 
+ 
+DECEMBER, 2025 
+ 
+ 
+i 
+ 
+DECLARATION 
+I, UGBAH-NDUKA DAVID KING with the Matriculation Number BHU/22/04/05/0078 
+declare that this Project was carried out by me and every other external work used in this 
+report has been fully acknowledged. 
+ 
+ 
+ 
+………………………….                                                                       …………………… 
+BHU/22/04/05/0078           DATE 
+UGBAH-NDUKA DAVID KING 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ii 
+ 
+CERTIFICATION 
+This is to certify that this project was written by UGBAH-NDUKA DAVID KING with 
+Matric Number BHU/22/04/05/0078 and submitted to the Department of Computer 
+Science, Faculty of Computing, Bingham University, Karu, Nigeria, as part of the 
+requirements for the award of Bachelor of Science (B. Sc.) in Computer Science. 
+ 
+ 
+ 
+____________________________   ____________________________ 
+Mr. Nathan A. Zoakah      DATE  
+Supervisor 
+ 
+ 
+____________________________   _____________________________ 
+Dr. Adamu S. Usman      DATE 
+Head of Department  
+ 
+ 
+____________________________   _____________________________ 
+         DATE  
+External Examiner       
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+iii 
+ 
+ACKNOWLEGEMENTS 
+I wish to express my sincere appreciation my supervisor Mr. Nathan Ayuba Zoakah for 
+the guidance, inspiration and continuous support during this period of my Final Year.  
+I would like to thank the Dean of the Faculty of Computing and HOD of Department of 
+Computer Science Dr. Adamu S. Usman. My profound gratitude goes to the Lecturers in 
+the Department of Computer Science which include Dr. Yakubu Aliyu Ibrahim, Mrs. 
+Oluwatoyin Adelakun Adeyemo, Mr. Maikori Ezekiel Jenome, Mr. Barka T. Fori, Mr. 
+Emmanuel Dauda and Mr. Nathan Zoakah. A special thanks to all the Lecturers in Faculty 
+of Computing which include: Head of Information Technology Dr. Anah Hassan Biljik, 
+Head of Cyber Security Dr. Oluwasegun Ishaya Adelaye, Dr. Onu Egena, Dr. Victor E. 
+Kulugh, Mr. Musa Yusuf, Mr. Ibrahim Lawal Mrs. Adelaiye A. Nancy. I also thank the 
+Technologists in the Faculty which include: Mr. Joseph Oladele Aremu, Mr. Ngale 
+Langthong and Mr. Sharac k Akoh. I also appreciate the Faculty Officer, Mrs. Ajibade 
+Blessing, the Departmental Secretary Mrs. Chioma Godsfavour and the Faculty Clerical 
+Officer, Madam Mary Madaki. A big thank you to all the Teaching and Non-teaching Staff 
+of the Faculty of Computing, Bingham University. 
+I would like to thank my loving parents Mr. and Mrs.  UGBAH-NDUKA for giving their 
+support Financially, Morally, Emotionally and Spiritually. Also, I say thank you to my 
+beloved siblings for being there for me always. I thank my fellow Students from the 
+Department of Computer Science for their support and logical contributions in the various 
+parts of my project. 
+Finally, I appreciate everyone whose name were not mention but has in one way or the 
+other contributed to the success of this project. May Almighty God bless them all. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+iv 
+ 
+DEDICATION 
+This research work is dedicated to Almighty God the source of my knowledge and creator 
+of the universe. I also dedicate this project to my loving parents Mr. and Mrs.  
+UGBAH-NDUKA, and to my beloved siblings.
+v 
+ 
+TABLE OF CONTENTS 
+CHAPTER ONE ............................................................................................................................................................................. 1 
+INTRODUCTION .......................................................................................................................................................................... 1 
+1.1 Background of Study ................................................................................................................................................................ 1 
+1.2 Statement of Problem ............................................................................................................................................................... 2 
+1.3 Research Questions ................................................................................................................................................................... 2 
+1.4 Aim and Objectives of the Study ............................................................................................................................................. 3 
+1.5 Significance of the Study .......................................................................................................................................................... 3 
+1.6 Scope of the Study ..................................................................................................................................................................... 4 
+1.8 Expected Outcome .................................................................................................................................................................... 4 
+1.9 Organization of the Study ........................................................................................................................................................ 5 
+CHAPTER TWO ............................................................................................................................................................................ 6 
+LITERATURE REVIEW .............................................................................................................................................................. 6 
+2.1 Introduction to the Research Topic ......................................................................................................................................... 6 
+2.2 Historical Context of the Research Topic ............................................................................................................................... 6 
+2.2.1 Theoretical Frameworks ................................................................................................................................................... 7 
+2.3 Key Concepts and Definitions .................................................................................................................................................. 8 
+2.4 Methodologies and Research Designs ...................................................................................................................................... 9 
+2.5 Empirical Studies .................................................................................................................................................................... 10 
+2.6 Conceptual Frameworks ........................................................................................................................................................ 11 
+2.7 Debates and Controversies ..................................................................................................................................................... 11 
+2.10 Practical Implications ........................................................................................................................................................... 14 
+2.11 Related Works ....................................................................................................................................................................... 15 
+CHAPTER THREE ...................................................................................................................................................................... 18 
+SYSTEM DESIGN AND METHODOLOGY ............................................................................................................................ 18 
+3.1 Research Approach ................................................................................................................................................................. 18 
+3.2 Research Design ...................................................................................................................................................................... 18 
+3.3 Software Development Methodology ..................................................................................................................................... 19 
+3.3.1 Adopted Methodology ..................................................................................................................................................... 19 
+3.4 Methodology: Tools and System Architecture ..................................................................................................................... 20 
+3.5 Research Timeline and Evaluation ........................................................................................................................................ 21 
+3.6 Data Analysis and Evaluation Plan ....................................................................................................................................... 23 
+3.7 Validity and Reliability........................................................................................................................................................... 23 
+3.8 System Design and Methodology for Software Development .............................................................................................. 24 
+3.8.3 System Modelling ................................................................................................................................................................. 28 
+3.8.4 System Requirements .......................................................................................................................................................... 33 
+3.8.5 Database Schema Design ..................................................................................................................................................... 36 
+REFERENCES ............................................................................................................................................................................. 38 
+ 
+ 
+vi 
+ 
+LIST OF TABLES 
+ 
+Table 2.1: Review of Related Works ...................................................................................... 15 
+Table 3.1: Research Timeline and Activities .......................................................................... 21 
+Table 3.2: Functional Requirements ...................................................................................... 34 
+Table 3.3: Non-Functional Requirements .............................................................................. 35 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1 
+ 
+CHAPTER ONE 
+INTRODUCTION 
+1.1 Background of Study 
+Elections form the foundation of democratic governance, enabling citizens to choose leaders and 
+influence public policy. However, traditional voting methods in Nigeria face serious challenges 
+that undermine electoral credibility and public trust. During th e 2023 general elections, the 
+Bimodal Voter Accreditation System (BVAS) experienced failures in approximately 14% of 
+polling units, causing delays, voter disenfranchisement, and voting suspensions (Ene Obi, 2023; 
+olufemiajasa, 2023). Additional problems in cluded late poll openings, missing materials, vote -
+buying, ballot-box snatching, violence, and failure to upload results (Ene Obi, 2023). 
+Electronic voting (e-voting) systems offer digital platforms for casting, counting, and transmitting 
+votes efficiently. E-voting aims to improve efficiency, enhance transparency, reduce human error, 
+and strengthen public confidence in electoral outcomes (A desiyan, 2023). Estonia successfully 
+implemented internet -based voting in 2005 using national ID cards for secure authentication, 
+demonstrating that digital platforms can increase efficiency whilst maintaining security (Fabian 
+Breuer and Alexander H. Trechse, 2006; David Mac Dougall, 2023). 
+However, conventional e-voting systems face significant limitations. Centralized architectures are 
+vulnerable to cyberattacks, data manipulation, and limited auditability. Poor infrastructure, 
+inadequate training, and connectivity issues further compromise effectiveness in Nigeria (Ene Obi, 
+2023). 
+Blockchain technology addresses these limitations through decentralized distributed ledgers that 
+ensure immutability, transparency, and tamper -resistance. Blockchain -based e -voting systems 
+enable verifiable vote records, prevent double voting, preserve vot er anonymity, and provide 
+auditable election trails (Russo et al., 2021; Ohize et al., 2024). 
+Integrating blockchain e-voting with Nigeria's National Identification Number (NIN) strengthens 
+voter authentication and reduces impersonation. The NIN, issued by the National Identity 
+Management Commission (NIMC), provides unique identifiers for Nigerian citizens, enabling 
+secure voter verification (Adesiyan, 2023). 
+2 
+ 
+This study designs and implements a blockchain -enabled e -voting platform linked to NIN to 
+address Nigeria's recurring electoral challenges including technical failures, authentication issues, 
+and public mistrust in the Independent National Electoral Commis sion (INEC). The system aims 
+to enhance the integrity and reliability of Nigerian electoral processes (Ene Obi, 2023; Adesiyan, 
+2023). 
+1.2 Statement of Problem  
+Elections in Nigeria are central to democratic governance, yet persistent challenges undermine 
+their credibility. During the 2023 general elections, approximately 14% of polling units 
+experienced failures in the Bimodal Voter Accreditation System (BVAS), l eading to delayed 
+voting, disenfranchisement, and suspension of voting at affected units (Ene Obi, 2023). Election 
+observers reported missing materials, late opening of polling units, ballot -box snatching, 
+intimidation, and failure to upload results for mu ltiple locations (Ene Obi, 2023; olufemiajasa, 
+2023). 
+While electronic and biometric systems like BVAS have been introduced to improve efficiency 
+and transparency, centralized architectures remain vulnerable to technical failures, manipulation, 
+and limited auditability. Connectivity issues, power outages, and  human error continue to 
+compromise system reliability (Adesiyan, 2023). 
+Despite these interventions, no existing blockchain -based system integrated with the National 
+Identification Number (NIN) exists in Nigeria to ensure secure, verifiable, and tamper -proof 
+elections. This gap highlights the need for an innovative solution co mbining decentralized ledger 
+technology with NIN authentication to guarantee transparency, auditability, and trust in electoral 
+outcomes. This study designs and implements a blockchain-enabled e-voting system using NIN to 
+address these systemic deficiencies and enhance the integrity of future Nigerian elections (Russo 
+et al., 2021; Ene Obi, 2023). 
+1.3 Research Questions 
+Based on the recurring failures of Nigeria's electoral system and the limitations of current 
+electronic and biometric voting technologies, this study addresses the following research 
+questions: 
+3 
+ 
+1. How can a blockchain-based system be designed to ensure secure, verifiable, and tamper-
+proof e-voting in Nigeria? 
+2. In what ways can integration with the National Identification Number (NIN) enhance voter 
+authentication and prevent impersonation? 
+3. What are the technical and operational challenges of implementing blockchain-enabled e-
+voting in the Nigerian electoral context? 
+4. How can the proposed system improve transparency, auditability, and public trust 
+compared to existing electronic voting solutions? 
+1.4 Aim and Objectives of the Study 
+The aim of this study is to design and implement a secure, transparent, and verifiable blockchain  
+based e-voting system that integrates Nigeria’s National Identification Number (NIN) for efficient 
+voter authentication and election integrity. The Objectives of the study are to; 
+i. Analyze the limitations of existing electronic and biometric voting systems in Nigeria. 
+ii. Design a blockchain enabled e-voting architecture that ensures immutability, auditability, 
+and secure vote recording. 
+iii. Integrate/ simulate the system with NIN for robust voter authentication and prevention of  
+impersonation. 
+iv. Implement the designed system and conduct functional testing to ensure reliability and 
+security. 
+v. Evaluate the system’s performance and compare it with existing electronic voting solutions 
+in terms of transparency, efficiency, and user trust. 
+1.5 Significance of the Study 
+The significance of this study lies in its potential to enhance the credibility, transparency, and 
+efficiency of elections in Nigeria. By designing a blockchain -based e-voting system integrated 
+with the National Identification Number (NIN), the study aims to: 
+i. Reduce electoral fraud and prevent voter impersonation through secure digital voter 
+authentication. 
+ii. Improve public trust in the electoral process by ensuring verifiable and tamper -proof vote 
+records. 
+4 
+ 
+iii. Provide a framework for transparent and auditable elections that can minimize disputes 
+and delays in result collation. 
+iv. Offer insights and a practical model for policymakers, electoral bodies, and researchers 
+interested in secure and technology-driven voting systems. 
+1.6 Scope of the Study 
+The scope of this study is limited to the design and implementation of a blockchain-based e-voting 
+system integrated with Nigeria's National Identification Number (NIN) for secure voter 
+authentication. The study focuses on: 
+i. Development of a Digital Voting Platform:  Designing a user -friendly interface that 
+allows registered voters to cast ballots securely from digital devices. 
+ii. Blockchain Implementation:  Integrating a decentralized ledger to ensure votes are 
+immutable (cannot be changed), transparent (viewable by authorized parties), and auditable 
+(verifiable for accuracy). 
+iii. NIN Integration:  Creating an authentication layer that communicates with the NIN 
+database (or simulated version) to verify voter identity and prevent multiple voting or 
+impersonation. 
+iv. Performance Testing: Evaluating the system in a simulated environment to measure 
+transaction processing speed (performance), attack resistance (security), and system 
+uptime (reliability). 
+Out of scope: 
+i. Nationwide deployment across all polling units. 
+ii. Legal, political, and policy adoption processes. 
+iii. Physical hardware procurement, maintenance, or on-site election logistics. 
+1.8 Expected Outcome 
+The expected outcome is a fully functional blockchain-based e-voting system where eligible voters 
+authenticate using their National Identification Number (NIN), securely cast votes, and have votes 
+recorded immutably on a blockchain network. The system will  provide secure voter verification, 
+transparent vote storage, and automated vote tallying through smart contracts. A comprehensive 
+5 
+ 
+project report documenting the system's design, architecture, implementation, and testing will be 
+produced. 
+1.9 Organization of the Study 
+This research is organized into five chapters: 
+Chapter One: Introduction 
+Presents the background, problem statement, aim and objectives, significance, scope, and 
+definition of terms. It establishes the foundation for understanding why a blockchain -based e -
+voting system integrated with NIN authentication is necessary. 
+Chapter Two: Literature Review 
+Reviews relevant theoretical and empirical literature, examining existing electronic voting 
+systems, blockchain technologies, biometric authentication methods, and previous studies 
+integrating NIN or similar national identity systems for secure voting. 
+Chapter Three: System Design and Methodology 
+Describes the research methodology and system architecture, outlining system requirements, 
+flowcharts, UML diagrams, blockchain model (consensus mechanism, ledger structure), and NIN 
+verification process. It details the tools and technologies used for development. 
+Chapter Four: Implementation and Testing 
+Presents the practical implementation including development environment, user interface design, 
+backend logic, smart contract deployment, and NIN authentication integration. It includes 
+functional and non-functional testing, performance evaluation, and security validation. 
+Chapter Five: Summary, Conclusion, and Recommendations 
+Summarizes the entire work and discusses how the system meets stated objectives. It provides 
+conclusions on the effectiveness of the blockchain -based e -voting model and offers 
+recommendations for future enhancements, policy adoption, and further research. 
+ 
+ 
+ 
+ 
+6 
+ 
+CHAPTER TWO 
+LITERATURE REVIEW 
+2.1 Introduction to the Research Topic 
+Electoral integrity remains a critical challenge in developing nations, where vote manipulation, 
+fraud, and lack of transparency undermine public confidence in democratic processes (Kshetri & 
+V oas, 2018). Blockchain-based e-voting systems offer a solution by leveraging blockchain's key 
+features decentralization, immutability, transparency, and cryptographic security to create tamper-
+resistant voting infrastructures that can be audited by multiple stakeholders (Hjálmarsson et al., 
+2018). 
+Integrating Nigeria's National Identification Number (NIN) adds a crucial layer of identity 
+verification. This ensures "one person, one vote" by preventing duplicate registrations and voter 
+impersonation (Yaga et al., 2019). This research combines blockchain technology for secure vote 
+recording with NIN-based authentication to create a verifiable electoral platform. 
+The system addresses Nigeria's specific challenges, manual vote counting across dispersed polling 
+units, electoral malpractices like ballot stuffing, and the need for secure yet inclusive voting 
+mechanisms (Adeniji & Olaosebikan, 2020). By enabling real-time vote counting and verification, 
+the system can enhance electoral credibility, reduce disputes, and restore citizen confidence that 
+votes are accurately recorded without manipulation (Pawlak et al., 2018). 
+2.2 Historical Context of the Research Topic 
+Electronic voting systems have evolved through several distinct phases over five decades. 
+Traditional paper-based voting relies on manual counting and physical ballot boxes, making it 
+vulnerable to manipulation, human error, and logistical challenges (Grit zalis, 2002). The first 
+generation of electronic voting emerged in the 1960s with direct recording electronic (DRE) 
+machines using push buttons or touch screens. However, these systems lacked verifiable paper 
+trails and raised concerns about result manipulation (Mercuri, 2002). 
+The 1990s introduced internet -based voting systems. Estonia implemented remote e -voting for 
+national elections, but these centralized systems remained vulnerable to server attacks and lacked 
+transparency (Springall et al., 2014). The breakthrough came in 2 008 when Bitcoin introduced 
+7 
+ 
+blockchain technology, demonstrating how distributed ledgers could create tamper -resistant 
+records without central authority (Nakamoto, 2008). Researchers began exploring blockchain for 
+voting in the early 2010s, recognizing its potential to address electoral integrity challenges (Ayed, 
+2017). 
+The first blockchain voting trials occurred between 2016 -2018 in Switzerland, South Korea, and 
+Sierra Leone, though these implementations faced scalability and usability challenges 
+(Hjálmarsson et al., 2018). In Nigeria, the National Identity Management Co mmission (NIMC) 
+launched the NIN system in 2014, creating the infrastructure necessary for digital identity 
+verification in e -voting (NIPC, 2020). Recent research focuses on integrating biometric 
+authentication with blockchain voting to strengthen identity  verification while maintaining ballot 
+secrecy (Alam et al., 2021). Challenges around voter privacy, accessibility, and regulatory 
+frameworks continue to drive ongoing research. 
+2.2.1 Theoretical Frameworks 
+This research applies several established frameworks from information security and democratic 
+systems. The CIA Triad (Confidentiality, Integrity, Availability) provides foundational security 
+principles (Stallings & Brown, 2018). Confidentiality ensures vot es remain secret and cannot be 
+linked to voters. Integrity guarantees votes cannot be altered after submission. Availability ensures 
+eligible voters can access the system during voting periods. 
+The Defense -in-Depth model informs the multi -layered security approach. Blockchain 
+immutability, cryptographic encryption, NIN authentication, and smart contract validation 
+function as complementary layers protecting against different attack vectors (Scarf one & Mell, 
+2007). The Zero Trust Security model requires continuous verification throughout the voting 
+process rather than relying only on initial login (Rose et al., 2020). V oters authenticate using NIN 
+before accessing ballots, votes are cryptographically signed to prevent tampering, and blockchain 
+nodes independently verify each transaction. These frameworks guide the system architecture 
+towards comprehensive security while maintaining ballot secrecy and electoral transparency. 
+ 
+8 
+ 
+2.3 Key Concepts and Definitions 
+i. Blockchain: is a distributed ledger technology that records transactions across multiple 
+computers, making records immutable and transparent. Each block contains a 
+cryptographic hash of the previous block, creating a tamper -evident chain (Yaga et al., 
+2019). 
+ii. Smart Contracts: are self-executing programs stored on a blockchain that automatically 
+enforce predefined rules and conditions, enabling automated vote validation and tallying 
+without human intervention (Zheng et al., 2020). 
+iii. Decentralization: describes a system architecture where control and decision-making are 
+distributed across multiple nodes rather than concentrated in a single central authority, 
+reducing single points of failure and manipulation risk (Buterin, 2014). 
+iv. Immutability: means that once data is recorded on a blockchain, it cannot be altered or 
+deleted without detection, ensuring votes remain permanent and tamper -proof after 
+submission (Nakamoto, 2008). 
+v. Consensus Mechanism : refers to the algorithm blockchain networks use to achieve 
+agreement among distributed nodes on transaction validity. Common mechanisms include 
+Proof of Work, Proof of Stake, and Practical Byzantine Fault Tolerance, is a system that 
+allows a network to re ach a correct agreement even if up to one -third of its members are 
+lying or failing, by having all nodes cross-verify each other's messages in multiple rounds. 
+(Mingxiao et al., 2017). 
+vi. National Identification Number (NIN): is a unique 11-digit number issued by Nigeria's 
+National Identity Management Commission to citizens and legal residents, serving as the 
+primary identifier for government services and identity verification (NIMC, 2020). 
+vii. Cryptographic Hashing: uses mathematical algorithms to convert data into fixed -length 
+strings that uniquely represent the original data, enabling vote verification without 
+revealing vote content (Stallings & Brown, 2018). 
+viii. Digital Signature: is a cryptographic technique that authenticates the sender of a digital 
+message and ensures message integrity, allowing voters to sign their ballots without 
+revealing their identity (Katz & Lindell, 2014). 
+9 
+ 
+ix. Electoral Integrity : refers to the degree to which elections are conducted fairly, 
+transparently, and according to democratic principles, producing results that accurately 
+reflect voter preferences (Norris, 2014). 
+x. Voter Authentication: involves verifying that a person attempting to vote is eligible and 
+authorized to participate in the election, typically through identity verification mechanisms 
+(Jones & Simons, 2012). 
+xi. Ballot Secrecy: ensures that individual votes cannot be traced back to specific voters, 
+protecting voters from coercion and enabling free expression of political preferences 
+(Benaloh, 2006). 
+xii. End-to-End Verifiability : means that voters can verify their votes were correctly 
+recorded, counted, and included in the final tally without compromising ballot secrecy 
+(Adida, 2008). 
+2.4 Methodologies and Research Designs 
+Research in blockchain-based e-voting systems primarily uses experimental, design science, and 
+case study methodologies. Experimental approaches test blockchain voting platforms to measure 
+transaction throughput, latency, scalability, and security resilien ce against attack scenarios 
+(Hjálmarsson et al., 2018). These studies compare blockchain implementations against traditional 
+systems or evaluate different consensus mechanisms for optimal configurations. 
+Design science research focuses on creating and evaluating new blockchain voting architectures 
+for real-world electoral contexts (Kshetri & V oas, 2018). This involves iterative cycles of design, 
+implementation, testing, and refinement based on stakeholder feedback. Case study methodologies 
+examine actual deployments in Estonia, Switzerland, and Sierra Leone, documenting 
+implementation challenges, voter acceptance rates, and operational outcomes (Hao et al., 2020). 
+Mixed-methods approaches combine quantitati ve performance metrics with qualitative 
+assessments of voter experiences and regulatory compliance (Pawlak et al., 2018). 
+Data collection methods vary across studies. Some researchers use simulated elections with 
+controlled populations, while others analyze data from pilot deployments or actual electoral events. 
+Proof of Authority (PoA) and Practical Byzantine Fault Tolerance (PBFT) consensus mechanisms 
+are popular choices for voting applications, offering transaction confirmation times under 10 
+seconds compared to Proof of Work (Shahzad & Crowcroft, 2019). Ethereum and Hyperledger 
+10 
+ 
+Fabric dominate platform choices due to their mature development tools and extensive 
+documentation. 
+Evaluation frameworks consider technical performance, security, voter privacy, auditability, 
+accessibility, and regulatory compliance (Springall et al., 2014). Security testing includes 
+penetration testing, formal verification of smart contracts, and simulation of attack scenarios such 
+as double-voting attempts, denial-of-service attacks, and node collusion. 
+2.5 Empirical Studies 
+Recent research demonstrates both the potential and challenges of blockchain -based e -voting 
+systems. Bismark et al. (2025) pioneered NIN-blockchain integration in Nigeria, achieving 100% 
+authentication accuracy by separating identity verification from vote recording.  
+Njoku et al. (2023) used IBM Hyperledger Fabric with NIN authentication, showing that enterprise 
+blockchains offer faster speeds and better privacy control than public blockchains. However, both 
+studies tested only simulated systems without connecting to a ctual NIMC databases, leaving 
+questions about real-world performance, network delays, and data reliability unanswered. 
+Jayakumari et al. (2024) tackled scalability by combining cloud computing with blockchain 
+technology, achieving fast transaction times through automated smart contracts. Their cloud-based 
+approach raised concerns about data sovereignty and reliance on third-party providers.  
+Osayomore et al. (2025) strengthened authentication by adding fingerprint and facial recognition 
+to blockchain voting, demonstrating higher accuracy than NIN -only systems. However, the high 
+costs of biometric hardware and privacy risks of centralized biome tric databases pose significant 
+barriers to nationwide deployment. 
+Steven et al. (2025) explored the Internet Computer Protocol in Indonesia, achieving over 1,000 
+transactions per second at lower costs than Ethereum. Their real -world implementation revealed 
+important challenges including voter education needs and varying technical literacy across age 
+groups and locations. While valuable, their Indonesian -specific design lacks NIN integration and 
+does not address Nigerian legal requirements, limiting direct application to Nigerian elections. 
+11 
+ 
+2.6 Conceptual Frameworks 
+The conceptual framework for blockchain-based e-voting systems with NIN integration comprises 
+interconnected layers. The identity layer manages voter registration, NIN verification, and 
+biometric authentication to ensure only eligible citizens participate (Kshetri & V oas, 2018). This 
+layer interfaces with Nigeria's National Identity Management Commission database to validate 
+credentials before granting access. 
+The blockchain layer provides distributed ledger infrastructure where votes are recorded as 
+immutable transactions. Each vote is cryptographically hashed and linked to previous transactions, 
+creating a tamper-evident chain (Yaga et al., 2019). Consensus mechanisms allow network nodes 
+to agree on vote validity without central authority. 
+The smart contract layer contains self -executing programs that enforce voting rules, validate 
+eligibility, prevent double voting, and automatically tally results (Hjálmarsson et al., 2018). The 
+security layer implements cryptographic encryption for confide ntiality, digital signatures for 
+authentication, and access controls separating voter identity from vote content to maintain ballot 
+secrecy (Shahzad & Crowcroft, 2019). 
+The interface layer provides user-facing applications for voters, election officials, and observers, 
+emphasizing simplicity for varying technical abilities (Risnanto & Imran, 2019). The verification 
+layer enables end -to-end auditability, allowing voters to  confirm votes were recorded correctly 
+while preventing identification of how individuals voted (Adida, 2008). 
+This framework emphasizes modularity for independent component development and testing. 
+Privacy-preserving design includes data minimization, ballot secrecy, and electoral law 
+compliance. The model balances technological capabilities with democratic princi ples to achieve 
+legitimacy (Norris, 2014). 
+2.7 Debates and Controversies 
+Significant debates surround the implementation of blockchain -based e -voting systems in 
+democratic elections. Privacy concerns constitute the primary controversy. Critics argue that 
+digital voting systems inherently create electronic trails that could link  voters to their ballot 
+choices, compromising the fundamental democratic principle of secret ballots (Springall et al., 
+2014). Opponents fear that government authorities or hackers could analyze voting patterns and 
+12 
+ 
+identify individual voters through transaction metadata, network analysis, or correlation with 
+registration databases. 
+1. Scalability challenges  present another contentious issue. Blockchain networks face 
+throughput limitations that may prevent processing millions of votes within short 
+timeframes during national elections (Shahzad & Crowcroft, 2019). Critics point to 
+Ethereum's 15 -30 transactions per second as insufficient for large populations, though 
+proponents argue that permissioned blockchains and layer -2 solutions can achieve 
+necessary performance levels. 
+2. Technological accessibility  raises concerns that blockchain voting may disadvantage 
+citizens lacking internet connectivity, smartphones, or technical literacy, potentially 
+creating digital divides that exclude vulnerable populations (Khan et al., 2021).  With 
+researchers documenting exploitable weaknesses in smart contracts, client -side software, 
+and network infrastructure that could enable vote manipulation despite blockchain's 
+theoretical immutability (Atzei et al., 2017). 
+3. The verifiability paradox creates philosophical tensions. Systems providing strong voter 
+verification may inadvertently enable vote selling or coercion by allowing voters to prove 
+how they voted to third parties (Benaloh, 2006). Regulatory uncertainty presents practical 
+challenges, as most national electoral laws were written for paper -based systems and do 
+not clearly address blockchain voting legality, recount procedures, or dispute resolution 
+(Pawlak et al., 2018). 
+4. Trust in technology versus trust in institutions remains fundamentally contested. Some 
+argue that blockchain's cryptographic guarantees provide stronger assurances than human-
+administered elections, while others maintain that democratic legitimacy requires human 
+oversight that algorithms cannot replace (Norris, 2014). Cost-benefit calculations generate 
+ongoing disagreement, with implementation requiring substantial upfront investments 
+while cost savings materialize only over extended periods (Khan et al., 2021). 
+5. Environmental impact  concerns have emerged regarding energy consumption, 
+particularly for Proof of Work blockchains. These controversies have prompted varied 
+regulatory responses globally, with some jurisdictions embracing blockchain voting pilots 
+while others impose strict prohibitions. 
+13 
+ 
+2.8 Theoretical Contributions 
+This research proposes an integrated framework combining blockchain technology with Nigeria's 
+National Identification System to create a secure electoral architecture. The study demonstrates 
+how distributed ledger immutability, cryptographic authentication, smart contracts, and biometric 
+verification function as complementary security layers for democratic elections. By documenting 
+design principles and trade-offs between transparency and privacy, the research provides insights 
+applicable to broader governance contexts. 
+The work contributes to democratic theory by exploring how technology -mediated voting differs 
+from traditional ballot casting and its implications for political participation and electoral 
+legitimacy in Nigeria. It extends the CIA Triad (Confidentiality, Integrity, Availability) framework 
+by demonstrating its application where these principles must coexist despite inherent tensions, 
+advancing zero-trust security models requiring continuous cryptographic verification. 
+By examining NIN -based biometric authentication with blockchain anonymity, this research 
+contributes to identity management theory  specifically how systems verify identity during 
+authentication while preventing identity linkage during vote recording. The work demonstrates 
+how smart contracts encode Nigerian electoral rules into executable logic. 
+2.9 Methodological Contributions 
+Methodologically, this research demonstrates systematic blockchain -NIN database integration 
+while maintaining data sovereignty and privacy compliance. The study contributes methods for 
+implementing ballot secrecy in transparent blockchain systems through c ryptographic techniques 
+enabling vote verification without revealing content. 
+The research presents blockchain optimization techniques through consensus mechanism 
+selection, transaction batching, and scalability strategies. The evaluation framework assesses 
+technical performance, security, usability, and regulatory compliance  offering a comprehensive 
+template for blockchain governance systems.  The study advances voter privacy protection by 
+evaluating linkability risks, transaction metadata exposure, and anonymity guarantees. It 
+demonstrates hybrid system design combining blockchain i mmutability with database efficiency, 
+identifying when decentralization is necessary versus when centralized systems suffice. 
+14 
+ 
+2.10 Practical Implications 
+The practical implications of this research extend across multiple stakeholder groups in Nigeria's 
+electoral ecosystem. For the Independent National Electoral Commission (INEC), the study 
+demonstrates the feasibility of implementing a cost-effective blockchain-based voting system that 
+can scale to handle millions of voters across Nigeria's 36 states and Federal Capital Territory 
+without proportional increases in staffing or manual counting requirements. The research provides 
+guidance for electoral bodies co nsidering blockchain adoption, outlining technical requirements, 
+infrastructure needs, and potential challenges specific to Nigerian contexts. 
+For Nigerian voters, the system offers transparent, verifiable voting that eliminates opportunities 
+for ballot stuffing and result manipulation while ensuring each vote is accurately recorded and 
+counted. Blockchain transparency may increase voter confiden ce compared to opaque manual 
+counting processes that currently generate frequent disputes. For political parties and candidates, 
+automated vote tallying and real -time result verification reduce opportunities for electoral fraud 
+while providing credible audit trails that can resolve disputes without prolonged legal battles. 
+For the National Identity Management Commission, the research demonstrates practical 
+applications of the NIN database beyond basic identification, showing how biometric records can 
+strengthen democratic processes while justifying continued investment in na tional identity 
+infrastructure. For civil society organizations and election observers, the system provides 
+unprecedented transparency through blockchain's public ledger, enabling independent verification 
+of results and strengthening democratic accountability. 
+For Nigerian policymakers and lawmakers, the research illuminates the capabilities and limitations 
+of blockchain voting technology, informing potential amendments to electoral laws and regulatory 
+frameworks that would enable legal adoption. The study's emphasis on privacy-preserving design 
+and compliance with democratic norms provides practical insights for developing systems that 
+balance technological efficiency with constitutional requirements for free, fair, and credible 
+elections. For technology develop ers and system integrators, the research provides a practical 
+blueprint for implementing blockchain voting solutions in developing country contexts where 
+infrastructure constraints and diverse user populations require careful design considerations. 
+15 
+ 
+2.11 Related Works 
+A comprehensive review of empirical literature reveals the evolution and current state of 
+blockchain-based e-voting systems integrated with national identity verification mechanisms.  
+Table 2.1 synthesizes major research contributions, highlighting their methodological approaches, 
+key findings, and limitations. The studies are organized thematically based on core research focus: 
+blockchain architecture, biometric integration, NIN -specific implem entations, and security 
+frameworks. 
+Table 2.1: Review of Related Works  
+S/N NAME TITLE METHOD FINDINGS LIMITATIONS 
+1 Bismark et al. 
+(2025) 
+Development of a 
+blockchain-based 
+electronic voting 
+system utilizing 
+NIN 
+Ethereum 
+blockchain with 
+smart contracts; 
+NIN database 
+verification; 
+local testing 
+Achieved 100% 
+login 
+authentication; 
+secure, 
+transparent vote 
+recording using 
+NIN verification 
+Limited to local 
+testing; 
+nationwide 
+scalability 
+untested; no 
+actual NIMC 
+database 
+integration 
+2 Njoku et al. 
+(2023) 
+Development of 
+an e-voting 
+system using 
+IBM blockchain 
+technology and 
+NIN 
+IBM 
+Hyperledger 
+Fabric; 
+SSADM; NIN 
+database 
+integration 
+Web-based 
+platform 
+authenticates 
+users via NIN 
+before 
+blockchain 
+ballot access 
+Enterprise IBM 
+framework limits 
+cost efficiency; 
+no exploration of 
+gas-efficient 
+blockchains 
+3 Jayakumari et 
+al. (2024) 
+E-voting system 
+using cloud-
+based hybrid 
+blockchain 
+technology 
+Hybrid 
+blockchain; 
+smart contracts; 
+timestamp 
+authentication; 
+PBFT 
+consensus 
+Secure, 
+transparent, cost-
+effective voting; 
+automated 
+tallying via 
+smart contracts 
+Simulation only; 
+no real 
+deployment; 
+lacks national 
+identity 
+authentication 
+4 Dumbre et al. 
+(2025) 
+Design and 
+implementation 
+of a blockchain-
+based e-voting 
+system with 
+enhanced voter 
+authentication 
+Permissioned 
+blockchain; 
+PoA consensus; 
+smart contracts; 
+multi-factor 
+authentication 
+Secure, tamper-
+proof voting 
+with low 
+latency; 
+automated 
+registration and 
+tallying 
+Simulation only; 
+real-world 
+deployment 
+untested; no 
+national ID 
+integration 
+5 Osayomore et 
+al. (2025) 
+Blockchain-based 
+e-voting system 
+enhanced with 
+Blockchain with 
+biometric 
+authentication; 
+Improved 
+authentication 
+accuracy; 
+High 
+infrastructure 
+costs; biometric 
+16 
+ 
+fingerprint and 
+facial recognition 
+SPSS analysis; 
+SWOT 
+evaluation 
+enhanced trust; 
+demonstrated 
+vote 
+immutability 
+privacy concerns; 
+uncertain 
+nationwide 
+scalability 
+6 Ejenarhome et 
+al. (2025) 
+Evaluation of 
+electronic-based 
+voting system 
+and design (2024 
+Edo State 
+election) 
+Blockchain with 
+multimodal 
+biometrics; case 
+study of 
+electoral failures 
+Decentralized 
+ledgers prevent 
+vote alteration; 
+solution to ballot 
+snatching 
+Heavy focus on 
+physical 
+hardware; limited 
+NIMC software 
+integration 
+details; scalability 
+unaddressed 
+7 Steven et al. 
+(2025) 
+Implementation 
+of blockchain-
+based electronic 
+voting system: 
+Indonesia case 
+study 
+Internet 
+Computer 
+Protocol; Azle 
+(TypeScript); 
+facial 
+recognition 
+Faster, cheaper 
+blockchain using 
+ICP; prevented 
+vote 
+manipulation via 
+Face ID 
+Designed for 
+Indonesian 
+context; no 
+Nigerian NIMC 
+API integration 
+8 Pandey & 
+Tiwari (2023) 
+Secure e-voting 
+systems using 
+blockchain 
+technology 
+Ethereum; smart 
+contracts; 
+Ganache; 
+MetaMask; 
+Web3.js; 
+Truffle; Mocha 
+Secure, 
+transparent, 
+anonymous 
+voting; 
+improved on-
+chain 
+verification 
+High Ethereum 
+gas costs; not 
+tested in live 
+elections; 
+requires technical 
+expertise 
+9 Russo et al. 
+(2021) 
+Chirotonia: A 
+scalable and 
+secure e-voting 
+framework based 
+on blockchains 
+and linkable ring 
+signatures 
+Blockchain with 
+linkable ring 
+signatures; 
+privacy-
+preserving 
+cryptography 
+Voter anonymity 
+preserved while 
+preventing 
+double voting; 
+scalable 
+architecture 
+Complex 
+cryptographic 
+implementation; 
+limited real-world 
+testing; unclear 
+high-load 
+performance 
+10 Shahzad & 
+Crowcroft 
+(2019) 
+Trustworthy 
+electronic voting 
+using adjusted 
+blockchain 
+technology 
+Modified 
+blockchain; 
+PBFT 
+consensus; 
+transaction 
+optimization 
+Transaction 
+confirmation 
+under 10 
+seconds; 
+trustworthy 
+Byzantine fault-
+tolerant 
+recording 
+Permissioned 
+blockchain limits 
+transparency; 
+centralized nodes 
+contradict 
+decentralization 
+11 Hjálmarsson 
+et al. (2018) 
+Blockchain-based 
+e-voting system 
+Ethereum; 
+university 
+election pilot 
+(50 participants) 
+Demonstrated 
+technical 
+feasibility; 
+validated vote 
+casting and 
+tallying 
+Small-scale only 
+(50 voters); 
+national 
+scalability 
+concerns; 
+throughput 
+limitations 
+17 
+ 
+12 Khan & Salah 
+(2021) 
+IoT security: 
+Review, 
+blockchain 
+solutions, and 
+open challenges 
+Literature 
+review; 
+blockchain 
+security 
+framework 
+analysis 
+Blockchain 
+enhances data 
+immutability, 
+device 
+authentication, 
+distributed trust 
+in IoT 
+Conceptual only; 
+no 
+implementation; 
+scalability and 
+resource demands 
+remain challenges 
+13 Hardwick et 
+al. (2018) 
+E-voting with 
+blockchain: An e-
+voting protocol 
+with 
+decentralization 
+and voter privacy 
+Hyperledger 
+Fabric 
+comparison; 
+privacy 
+protocols; 
+performance 
+benchmarking 
+Hyperledger 5-
+7x faster than 
+Ethereum; 90% 
+lower energy 
+consumption 
+Permissioned 
+blockchain limits 
+public audit; 
+complex setup for 
+authorities 
+14 Kshetri & 
+Voas (2018) 
+Blockchain-
+enabled e-voting 
+Theoretical 
+analysis; 
+security 
+assessment 
+framework 
+Blockchain 
+addresses vote 
+tampering, 
+enables 
+transparent 
+auditing, reduces 
+fraud 
+Theoretical only; 
+practical 
+deployment 
+challenges 
+unaddressed; 
+regulatory 
+barriers 
+unexplored 
+15 Yavuz et al. 
+(2018) 
+Towards secure 
+e-voting using 
+Ethereum 
+blockchain 
+Ethereum smart 
+contracts; 
+homomorphic 
+encryption; 
+prototype 
+Vote tallying 
+without 
+decrypting 
+individual 
+ballots; 
+preserved voter 
+privacy 
+High 
+computational 
+overhead; 
+processing time 
+unsuitable for 
+time-sensitive 
+elections 
+ 
+ 
+ 
+ 
+ 
+18 
+ 
+CHAPTER THREE 
+SYSTEM DESIGN AND METHODOLOGY 
+3.1 Research Approach 
+This research employs a mixed -methods approach, combining quantitative and qualitative 
+elements to address the design, implementation, and evaluation of the blockchain -based e-voting 
+system integrated with National Identification Number (NIN) authenticatio n. The quantitative 
+component measures system performance through metrics such as transaction throughput (votes 
+processed per second), authentication accuracy rates, blockchain synchronization latency, smart 
+contract execution time, and system scalability under varying voter loads. Performance 
+benchmarking compares the implemented system against existing electronic voting solutions in 
+terms of vote recording speed, result tallying efficiency, and infrastructure resource consumption. 
+The qualitative component includes evaluation of user experience through interface usability 
+assessments, voter confidence surveys, and system functionality validation with stakeholders 
+including potential voters, election officials, and technical administrators. User acceptance testing 
+gathers feedback on interface clarity, authentication process simplicity, voting workflow 
+intuitiveness, and overall trust in the system's ability to record votes accurately and securely. 
+This mixed -methods approach provides a complete understanding of both the technical 
+performance capabilities and practical usability of the developed system, ensuring that the solution 
+addresses Nigeria's electoral integrity challenges while remaining acce ssible and trustworthy for 
+end users across diverse demographic groups and technical literacy levels. 
+3.2 Research Design 
+This research uses experimental design and design science methodology. The study designs, 
+implements, and tests the blockchain e -voting system to evaluate its effectiveness. The research 
+has four stages: architecture design, prototype development, function al testing, and performance 
+evaluation. 
+The architecture design phase selects the blockchain platform, determines the consensus 
+mechanism, specifies smart contract logic, and establishes NIN integration protocols. The 
+prototype development phase builds core components incrementally: voter regist ration module, 
+19 
+ 
+NIN authentication interface, blockchain vote recording mechanism, and smart contract -based 
+tallying. 
+Functional testing simulates electoral processes including voter registration, authentication 
+attempts (legitimate and fraudulent), vote casting, and result tallying. This verifies the system 
+enforces electoral rules and prevents unauthorized actions. Perf ormance evaluation measures 
+authentication accuracy, transaction processing speed, scalability under voter loads, and 
+blockchain synchronization efficiency. Usability testing with representative voter demographics 
+assesses user experience. 
+This design validates whether the system addresses Nigeria's electoral integrity challenges while 
+remaining practical and accessible for real-world deployment. 
+3.3 Software Development Methodology 
+This project adopts an adapted Agile methodology, specifically Scrum, due to the iterative nature 
+of blockchain smart contract development, NIN integration testing, and the need for continuous 
+security validation and refinement. 
+3.3.1 Adopted Methodology 
+An adapted Agile (Scrum) methodology was selected for this project based on several project -
+specific factors: 
+i. Iterative Blockchain Development : Smart contracts for vote recording, authentication, 
+and tallying require continuous refinement. Agile's sprint-based approach enables iterative 
+improvement of security, efficiency, and compliance. 
+ii. Evolving Security Requirements : Security vulnerabilities discovered during 
+development require requirement updates. Agile accommodates these changes without 
+complete project restructuring. 
+iii. Early Component Testing: Each sprint delivers functional modules (NIN authentication, 
+blockchain vote recording, smart contract execution). This enables early testing before full 
+integration, allowing rapid issue identification and correction. 
+iv. Complexity Management: The system is broken into manageable features across sprints: 
+voter registration, authentication interface, vote casting, and result tallying. This reduces 
+complexity and enables focused development. 
+20 
+ 
+v. Academic Timeline Constraints: This final year project has strict submission deadlines. 
+Agile sprints ensure consistent progress within the required timeframe. 
+The Scrum implementation uses 2 -week sprint cycles. Each sprint focuses on specific system 
+components. Sprint planning defines objectives and deliverables. Daily tracking monitors 
+progress. Sprint reviews evaluate outputs against acceptance criteria. Sprint retrospectives identify 
+process improvements. 
+3.4 Methodology: Tools and System Architecture 
+1. Development Stack The system is built on the Ethereum ecosystem. Solidity is used for 
+smart contract logic, while the Truffle Suite and Ganache provide the framework for 
+development, testing, and local blockchain emulation. For the interface, React.js 
+(Frontend) and Node.js/Express (Backend) handle the voter experience and API requests, 
+respectively. 
+2. Authentication and Security To verify identity without compromising privacy, the system 
+integrates the WebAuthn API. This allows for device -level biometric authentication 
+(fingerprint or facial recognition) where sensitive data never leaves the user's device. For 
+data integrity, AES -256 encrypts voter information, while Elliptic Curve Cryptography 
+(ECC) ensures secure digital signatures for every cast vote. 
+ 
+3.4.1 Core Technical Tools 
+i. Blockchain: Solidity, Web3.js, OpenZeppelin (Security libraries). 
+ii. Database: MongoDB for registration logs; a simulated NIN Database  for NIMC 
+verification. 
+iii. Security: JWT for session management; bcrypt for hashing credentials. 
+iv. Testing: Mocha/Chai for smart contracts; Postman for API validation. 
+ 
+ 
+ 
+ 
+ 
+21 
+ 
+3.4.2 System Architecture and Workflow 
+The integration of NIN and Blockchain follows a four -stage process to ensure "one person, one 
+vote." 
+1. NIN Verification: The voter enters their 11 -digit NIN. The system queries the simulated 
+NIMC database to confirm eligibility and checks the blockchain ledger to ensure the user 
+hasn't already registered. 
+2. Biometric Enrollment (WebAuthn):  First-time users link their NIN to their device’s 
+biometrics. WebAuthn generates a cryptographic key pair; the biometric data stays on the 
+device, while the public key is stored for future authentication. 
+3. Authentication & Vote Casting:  For subsequent logins, the system issues a biometric 
+challenge. Upon a successful scan, the voter accesses the ballot. The selected vote is 
+encrypted and sent as a blockchain transaction. 
+4. Immutability & Double-Voting Prevention: The smart contract maps a hashed version 
+of the NIN to a "voted" status. Once a vote is recorded on the distributed ledger, the 
+blockchain's immutability prevents any alteration, and the system automatically rejects 
+further attempts from that NIN. 
+3.5 Research Timeline and Evaluation 
+The research spans approximately 16 weeks, divided into distinct phases as shown in Table 3.1:  
+Table 3.1: Research Timeline and Activities  
+Phase Week(s) Activities 
+Planning and Requirements 
+Analysis 
+1-2 Literature review completion 
+System requirements specification (functional 
+and non-functional) 
+Methodology finalization 
+Development environment setup (Ganache, 
+Truffle/Hardhat, Node.js, React) 
+NIN database simulation design 
+22 
+ 
+Core System Development  
+(Sprint 1 & 2) 
+3-6 Voter registration module implementation 
+NIN verification interface development 
+WebAuthn biometric authentication integration 
+Database schema design and implementation 
+Basic voting interface creation 
+Blockchain Integration  
+(Sprint 3 & 4) 
+7-10 Smart contract development for vote recording 
+Smart contract logic for duplicate voting 
+prevention 
+Blockchain connection implementation using 
+Web3.js 
+Vote encryption and submission mechanism 
+Result tallying smart contract development 
+System Integration and Testing 
+(Sprint 5) 
+11-13 Component integration into unified system 
+Authentication flow testing (NIN + WebAuthn) 
+Vote recording and retrieval testing 
+Duplicate voting prevention validation 
+Comprehensive system testing with simulated 
+electoral scenarios 
+Evaluation and Refinement 14-15 Performance metrics collection and analysis 
+Usability testing with representative users 
+Security testing (authentication bypass attempts, 
+duplicate voting tests) 
+Bug fixes and system refinements 
+Interface improvements based on user feedback 
+Documentation and Reporting 16 Final documentation completion 
+Research report writing (Chapters 4 and 5) 
+System demonstration preparation 
+Presentation materials creation 
+ 
+ 
+ 
+ 
+23 
+ 
+3.6 Data Analysis and Evaluation Plan 
+Performance Metrics 
+The system's effectiveness is measured through four primary indicators: 
+1. Authentication Accuracy: The percentage of legitimate NIN holders correctly verified via 
+WebAuthn versus rejected unauthorized attempts. 
+2. Transaction Speed: The time elapsed from vote submission to blockchain confirmation. 
+3. Security Integrity:  The rate at which the smart contract successfully blocks duplicate 
+voting attempts. 
+4. System Throughput: The capacity to handle concurrent voters without performance lag. 
+Evaluation Method 
+The system is evaluated using controlled test cases with predetermined outcomes to verify 
+technical and security requirements. 
+Test Case Categories 
+1. Legitimate Scenarios:  Verifies NIN-biometric registration, concurrent voting sessions, 
+and post-vote verification. 
+2. Security Violations: Tests the system’s ability to reject invalid NINs, block duplicate votes 
+via smart contracts, and deny access upon biometric failure. 
+3. Edge Cases: Assesses system resilience during network interruptions, biometric timeouts, 
+and cross-browser compatibility. 
+3.7 Validity and Reliability 
+To ensure research integrity, the following measures are implemented: 
+1. Internal Validity: Controlled scenarios with predefined inputs and outputs eliminate 
+external variables. Using a simulated NIN database ensures that system behaviors reflect 
+design logic rather than external network fluctuations. 
+24 
+ 
+2. External Validity: Testing covers realistic electoral conditions, including varying voter 
+loads (single vs. peak concurrent users), diverse devices (mobile vs. desktop), and different 
+network latencies to ensure findings apply to real-world deployment. 
+3. Reliability: The deterministic nature of Smart Contracts ensures that identical inputs 
+always produce identical outputs. Repeated testing of authentication workflows confirms 
+consistent acceptance or rejection of credentials. 
+4. Measurement & Construct Validity:  Metrics like Authentication Accuracy and 
+Transaction Time are benchmarked against existing blockchain literature. These criteria 
+accurately measure the system's ability to enforce electoral rules and maintain 
+responsiveness. 
+3.8 System Design and Methodology for Software Development 
+ 
+3.8.1 System Architecture 
+The system follows a multi-tier architecture with four layers: 
+1. Presentation Layer (Frontend) 
+1. Provides user-facing interfaces accessible through web browsers: 
+2. V oter Registration: Captures NIN, personal details, initiates WebAuthn biometric 
+enrollment 
+3. Authentication: Validates identity through NIN verification and WebAuthn biometric 
+challenge 
+4. V oting: Displays candidates and ballot options for selection 
+5. V ote Confirmation: Provides cryptographic receipt with transaction hash 
+6. Result Verification: Enables verification of recorded votes on blockchain 
+The frontend uses responsive design for accessibility across devices. WebAuthn leverages 
+browser's native biometric capabilities (fingerprint, facial recognition) without transmitting 
+biometric data to servers. 
+2. Application Layer (Backend) 
+Contains core business logic: 
+25 
+ 
+1. V oter Registration Management: Processes registration, validates NIN against simulated 
+NIMC database 
+2. Authentication Service: Handles NIN verification, manages WebAuthn challenges 
+3. V ote Processing: Receives votes, encrypts ballot data, prepares blockchain transactions 
+4. Blockchain Interaction: Communicates with Ganache using Web3.js, submits transactions 
+5. Result Tallying: Queries smart contracts for vote counts, generates reports 
+ 
+3. Blockchain Layer 
+Handles decentralized vote recording: 
+1. V oter Registry Contract: Maps registered voters (hashed NIN → status), prevents 
+duplicates 
+2. V ote Recording Contract: Accepts encrypted votes, validates eligibility, records immutably 
+3. Duplicate Prevention Contract: Checks if voter has voted, rejects subsequent attempts 
+4. Result Tallying Contract: Counts votes per candidate, provides transparent totals 
+5. Consensus: Ganache uses instant mining, simulating Ethereum's proof-of-authority. 
+ 
+4. Data Layer 
+Manages off-chain storage: 
+1. V oter Database: Stores voter profiles with hashed NIN, timestamps, WebAuthn credential 
+IDs 
+2. Authentication Logs: Records login attempts with timestamps, status, IP addresses 
+3. System Configuration: Maintains election parameters (start/end times, candidates, rules) 
+4. Session Management: Temporary storage for authenticated sessions using JWT 
+26 
+ 
+ 
+Figure 3.1: System Architecture Diagram  
+ 
+3.8.2 System Workflow 
+Phase 1 - Voter Registration: 
+1. V oter enters 11-digit NIN and personal information 
+2. Backend verifies NIN validity against simulated NIMC database 
+3. System checks blockchain to ensure NIN hasn't been registered 
+4. If valid, voter proceeds to WebAuthn biometric enrollment 
+5. Browser prompts fingerprint or facial biometric registration 
+6. WebAuthn generates public/private key pair; public key stored in database, private key 
+stays on device 
+7. V oter record created and V oter Registry contract updated 
+ 
+
+27 
+ 
+Phase 2 - Voter Authentication: 
+1. V oter enters NIN on voting page 
+2. Backend retrieves WebAuthn credential ID for that NIN 
+3. System initiates WebAuthn authentication challenge 
+4. Browser prompts biometric verification (fingerprint/face scan) 
+5. Device validates biometric locally (data never leaves device) 
+6. If match, device signs challenge with private key 
+7. Backend verifies signature using stored public key 
+8. Successful authentication generates JWT session token. 
+Phase 3 - Vote Casting: 
+1. V oter views, selects candidate and clicks "Submit V ote" 
+2. Frontend encrypts vote and packages as blockchain transaction 
+3. Backend calls V ote Recording smart contract using Web3.js 
+4. Smart contract validates: voter registered, hasn't voted, election active 
+5. If valid, contract records vote and updates status to "has voted"  then Blockchain returns 
+transaction hash 
+6. Frontend displays success message with transaction hash 
+Phase 4 - Duplicate Voting Prevention: 
+1. Previously voted voter attempts to vote again and authenticates successfully 
+2. Smart contract executes duplicate prevention logic 
+3. Contract finds "has voted" flag set to true 
+4. Transaction rejected with error "V oter has already cast ballot" 
+5. Frontend displays rejection notification 
+6. Original vote remains unchanged (immutability preserved) 
+Phase 5 - Result Tallying: 
+1. After election closes, Result Tallying contract is triggered 
+2. Contract counts totals for each candidate. 
+3. Final tallies stored on blockchain, publicly accessible. 
+4. Any stakeholder can verify results by querying blockchain. 
+5. V ote immutability ensures results cannot be altered. 
+28 
+ 
+ 
+Figure 3.2: Complete Workflow 
+ 
+3.8.3 System Modelling 
+The system functionality is modelled using Unified Modelling Language (UML) diagrams: 
+1. Use Case Diagram 
+Actors: 
+• V oter: Registers, authenticates, and casts votes 
+• Election Administrator: Manages elections, monitors voting, and accesses results 
+• Election Observer: Verifies electoral integrity and result accuracy 
+Use Cases: 
+Voter: 
+1. Register as V oter (includes NIN Verification and WebAuthn Enrollment) 
+2. Authenticate Identity (includes NIN and Biometric Verification) 
+3. Cast V ote (requires Authentication) 
+4. Verify V ote Recorded 
+Administrator: 
+1. Configure Election (candidates, dates, rules) 
+2. Monitor V oting Activity 
+3. Access Results 
+4. Generate Reports 
+Observer: 
+1. Verify Blockchain Integrity 
+
+29 
+ 
+2. Audit V ote Records 
+3. Download Electoral Data 
+ 
+Figure 3.3: Use Case Diagram 
+ 
+ 
+
+30 
+ 
+2. Activity Diagram - Voting Workflow 
+Start → V oter navigates to voting website 
+Decision: Is voter registered? 
+If No → Registration Flow: 
+• Enter NIN and personal details 
+• System validates NIN with NIMC database 
+• Decision: NIN valid?  
+o No → Display error → End 
+o Yes → Check blockchain for existing NIN  
+▪ Decision: Already registered?  
+▪ Yes → Display error → End 
+▪ No → Browser prompts biometric registration → User scans 
+fingerprint/face → System stores WebAuthn public key → 
+Registration complete → Proceed to Authentication 
+If Yes → Authentication Flow: 
+• V oter enters NIN 
+• System retrieves WebAuthn credential 
+• Browser prompts biometric verification → User scans fingerprint/face 
+• Decision: Biometric verified?  
+o No → Display error → End 
+o Yes → System generates session token → Proceed to V oting 
+V oting Flow: 
+• Display ballot with candidate list 
+31 
+ 
+• V oter selects candidate and submits vote 
+• System encrypts vote and creates blockchain transaction 
+• Smart contract validates: voter registered, hasn't voted, election active 
+• Decision: Validations passed?  
+o No → Display error (reason: duplicate vote/election closed/not registered) → End 
+o Yes → Smart contract records vote → Update voter status to "voted" → Generate 
+transaction hash → Display success with hash → End 
+ 
+ 
+Figure 3.4: Activity Diagram - Voting Process/ Workflow 
+ 
+ 
+ 
+
+32 
+ 
+3. Sequence Diagram - Authentication Process 
+Objects: V oter, Web Browser, API Server, V oter Database, WebAuthn Service, Blockchain 
+Interaction Sequence: 
+1. V oter → Browser: Enters NIN on login page 
+2. Browser → API Server: POST /api/auth/login {nin: "12345678901"} 
+3. API Server → V oter Database: SELECT * FROM voters WHERE nin_hash = 
+hash("12345678901") 
+4. V oter Database → API Server: Returns {voter_id, webauthn_credential_id, voting_status} 
+5. API Server → Browser: Returns {credential_id, challenge: "random_bytes"} 
+6. Browser → WebAuthn Service: navigator.credentials.get({challenge, credentialId}) 
+7. WebAuthn Service → V oter: Prompts biometric verification (fingerprint/face scan) 
+8. V oter → WebAuthn Service: Provides biometric on device 
+9. WebAuthn Service: Validates biometric locally  
+o If No:  Returns error "Biometric verification failed" → Browser displays 
+"Authentication failed" → End 
+o If Yes: Returns signed authentication response → Continue 
+10. Browser → API Server: POST /api/auth/verify {credential_response, signature} 
+11. API Server: Verifies signature using stored public key  
+o If Invalid: Returns error → Browser displays "Authentication failed" → End 
+o If Valid: Continue 
+12. API Server → Blockchain: Query V oter Registry: hasV oted(voter_id) 
+13. Blockchain → API Server: Returns voting_status 
+14. API Server: Generates JWT session token {voter_id, exp: 3600} 
+33 
+ 
+15. API Server → Browser: Returns {token, voting_status, message: "Authentication 
+successful"} 
+16. Browser → V oter: Redirects to ballot page (if not voted) or displays "Already voted" 
+End Sequence 
+ 
+Figure 3.5: Sequence Diagram - Authentication Process  
+ 
+3.8.4 System Requirements 
+System requirements are categorized into functional and non -functional requirements, prioritized 
+using MoSCoW method (Must have, Should have, Could have, Won't have). 
+ 
+
+34 
+ 
+Table 3.2: Functional Requirements  
+Priority ID Category Description 
+Must 
+Have 
+FR1-
+FR3 
+Registration & 
+Authentication 
+Validate voter NIN against simulated NIMC 
+database; implement WebAuthn biometric 
+authentication; prevent duplicate registration 
+ 
+FR4-
+FR6 
+V ote Recording Record votes immutably on blockchain; prevent 
+duplicate voting; validate votes only during active 
+election period 
+ 
+FR7-
+FR9 
+Security & 
+Tallying 
+Encrypt vote data before blockchain submission; 
+generate unique transaction hashes as receipts; 
+automatically tally votes 
+ 
+FR10-
+FR11 
+User Feedback Provide real-time vote confirmation; reject 
+unauthorized attempts with clear error messages 
+Should 
+Have 
+FR12-
+FR14 
+Administration Administrator dashboard for voting statistics; 
+detailed audit logs; enable observers to verify 
+counts by querying blockchain 
+ 
+FR15-
+FR17 
+User Experience User-friendly error messages; voter verification 
+page for transaction hash checking; export results 
+in standard formats (PDF, CSV) 
+Could 
+Have 
+FR18-
+FR21 
+Enhanced Features Multiple simultaneous elections; multi-language 
+support (English, Hausa, Yoruba, Igbo); 
+SMS/email notifications; graduated security 
+responses 
+Won't 
+Have 
+FR22-
+FR25 
+Excluded Features No actual NIMC integration (simulation only); no 
+vote modification after submission; no ranked-
+choice voting; no biometric quality assessment 
+ 
+35 
+ 
+Table 3.3: Non-Functional Requirements  
+Priority ID Category Description 
+Must 
+Have 
+NFR1-
+NFR2 
+Performance Process votes with blockchain confirmation under 
+15 seconds; maintain 99% uptime during election 
+ 
+NFR3 Security Encrypt NIN using SHA-256 hashing; implement 
+HTTPS/TLS; store WebAuthn credentials on user 
+devices only 
+ 
+NFR4-
+NFR6 
+Accessibility Support standard browsers without specialized 
+software; function on minimum specs (4GB RAM, 
+dual-core processor) 
+ 
+NFR8 Design Implement responsive design for desktop and 
+mobile 
+Should 
+Have 
+NFR9-
+NFR11 
+User 
+Experience 
+Achieve 95%+ authentication accuracy; handle 
+50+ concurrent users; provide intuitive interfaces 
+ 
+NFR12-
+NFR14 
+Standards Maintain error logging; implement session 
+timeouts (15-30 minutes); comply with WCAG 
+2.1 Level A 
+Could 
+Have 
+NFR15-
+NFR18 
+Enhanced 
+Performance 
+Transaction processing under 5 seconds; graceful 
+degradation on slower networks; PWA features; 
+performance dashboards 
+Won't 
+Have 
+NFR19-
+NFR22 
+Excluded 
+Features 
+No Internet Explorer support; no advanced load 
+balancing; no automated disaster recovery; no 
+third-party penetration testing 
+ 
+ 
+36 
+ 
+3.8.5 Database Schema Design 
+1. Entity-Relationship Diagram (ERD) Database Relationships: 
+The database implements one -to-many relationships; Elections contain multiple Candidates; 
+Admins create multiple Elections, and V oters generate multiple Authentication_Logs entries. 
+ 
+Figure 3.6: Entity-Relationship Diagram (ERD) showing the database tables / entities 
+ 
+
+37 
+ 
+2. VoterRegistry Smart Contract: 
+This contract maintains the registry of registered voters and their voting status.  
+ 
+Figure 3.7: VoterRegistry Smart Contract Structure 
+ 
+3. VoteRecorder Smart Contract: 
+This contract handles immutable (Permanent) vote recording and tallying. 
+ 
+Figure 3.7: VoteRecorder Smart Contract Structure 
+
+38 
+ 
+REFERENCES  
+Adeniji, A. A., & Olaosebikan, O. (2020). Electronic voting system in Nigeria: Prospects and 
+challenges. International Journal of Computer Applications, 175(15), 7–13. 
+https://www.ijcaonline.org/archives/volume175/number15/31342-2020920394 
+Adesiyan, E. A. (2023). Digitization of electoral process and democratic consolidation: A case of 
+Ekiti and Osun State, Southwest, Nigeria. International Journal of Research and 
+Innovation in Social Science, VII(IV), 1530–1537. 
+https://doi.org/10.47772/IJRISS.2023.7527 
+Alam, A., Rashid, A., & Sani, A. S. (2021). Blockchain-based e-voting system with biometric 
+verification: https://doi.org/10.1109/ACCESS.2021.3102242 
+Bismark, O. I., Oshin, O., & Adetiba, E. (2025). Development of a blockchain-based electronic 
+voting system utilizing national identification number. International Journal of 
+Reconfigurable and Embedded Systems (IJRES), 14(3), 810–820. 
+https://doi.org/10.11591/ijres.v14.i3.pp810-820 
+Dumbre, R., et al. (2025). Design and implementation of a blockchain-based e-voting system 
+with enhanced voter authentication. Journal of Network and Computer Applications. 
+[Journal specific link] 
+Ejenarhome, O. P., Osayomore, E. G., & Oise, G. P. (2025). Evaluation of electronic based 
+voting system and design of blockchain-based electronic voting system enhanced with 
+fingerprint and facial recognition technologies to address impersonation. FUDMA 
+Journal of Sciences, 9(7), 13–25. https://doi.org/10.33003/fjs-2025-0907-3701 
+Hao, F., Kreeger, M. N., Randell, B., Clarke, D., Shahandashti, S. F., & Lee, P. H. J. (2020). 
+Every vote counts: Ensuring integrity in large-scale electronic voting. USENIX Journal 
+of Election Technology and Systems, 8(2), 1–25. https://www.usenix.org/jets/issues/0802 
+Jayakumari, B., Sheeba, S. L., Eapen, M., Anbarasi, J., Ravi, V ., Suganya, A., & Jawahar, M. 
+(2024). E-voting system using cloud-based hybrid blockchain technology. 
+https://doi.org/10.1016/j.jnlssr.2024.01.002 
+Khan, K. M., Arshad, J., & Khan, M. M. (2021). Secure digital voting system based on 
+blockchain technology. International Journal of Electronic Government Research, 17(1), 
+53–62. https://doi.org/10.4018/IJEGR.2021010104 
+39 
+ 
+Mac Dougall, D. (2023, August 3). How i-voting came of age in Estonia with record election 
+ballots. Euronews. http://www.euronews.com/next/2023/03/08/estonia-election-i-voting-
+comes-of-age-in-the-worlds-digital-republic-with-record-ballots 
+Njoku, T. S., et al. (2023). Development of an e-voting system using IBM blockchain technology 
+and users National Identification Number (NIN). 
+Norris, P. (2014). Why electoral integrity matters. Cambridge University Press. 
+https://doi.org/10.1017/CBO9781107280861 
+Ohize, H. O., Onumanyi, A. J., Umar, B. U., Ajao, L. A., Isah, R. O., Dogo, E. M., Nuhu, B. K. 
+Blockchain for securing electronic voting systems: A survey of architectures, trends, 
+solutions, and challenges. Cluster Computing, 28(2), Article 132. 
+https://doi.org/10.1007/s10586-024-04709-8 
+Olufemiajasa. (2023, March 3). TMG report on 2023 presidential and National Assembly 
+elections in Nigeria. Vanguard News. https://www.vanguardngr.com/2023/03/full-report-
+tmg-report-on-2023-presidential-and-national-assembly-elections-in-nigeria/ 
+Pandey, A., & Tiwari, S. (2023). Secure e-voting systems using blockchain technology. 
+International Journal of Information Security. [Journal specific link] 
+Rose, S., Borchert, O., Mitchell, S., & Connelly, S. (2020). Zero trust architecture (NIST Special 
+Publication 800-207). National Institute of Standards and Technology. 
+https://doi.org/10.6028/NIST.SP.800-207 
+Russo, A., Anta, A. F., Vasco, M. I. G., & Romano, S. P. (2021). Chirotonia: A scalable and 
+secure e-voting framework based on blockchains and linkable ring signatures 
+(arXiv:2111.02257). arXiv. https://doi.org/10.48550/arXiv.2111.02257 
+Steven, Hadiprodjo, F. H., Alam, I. N., & Wulandhari, L. A. (2025). Implementation of 
+blockchain-based electronic voting system: A case study in Indonesia. Procedia Computer 
+Science, 269, 1–12. https://doi.org/10.1016/j.procs.2025.08.253 
+Yaga, D., Mell, P., Roby, N., & Scarfone, K. (2019). Blockchain technology overview (NIST IR 
+8202). National Institute of Standards and Technology. 
+https://doi.org/10.6028/NIST.IR.8202 
+Zheng, Z., Xie, S., Dai, H. N., Chen, X., & Wang, H. (2020). Blockchain challenges and 
+opportunities: A survey. International Journal of Web and Grid Services, 14(4), 352–375. 
+https://doi.org/10.1504/IJWGS.2018.095647 

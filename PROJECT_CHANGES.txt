@@ -1,0 +1,542 @@
+================================================================
+VOTECHAIN — BLOCKCHAIN E-VOTING SYSTEM
+Full Project Changes Log
+Generated: 2026-05-14
+================================================================
+
+PROJECT OVERVIEW
+-----------------
+A full-stack blockchain-based e-voting system for Nigeria using
+NIN (National Identification Number) authentication.
+
+Three user roles: Admin, Voter, Observer
+Tech Stack: Solidity + Hardhat | Node.js + Express | React + Vite |
+            PostgreSQL + Prisma | Ethers.js | OpenZeppelin | Tailwind CSS
+
+================================================================
+PHASE 1 — PROJECT STRUCTURE CREATED
+================================================================
+
+Root folder created: C:\Users\HomePC\Desktop\evoting-system\
+Three subdirectories initialized:
+  - evoting-system\blockchain\   (smart contracts)
+  - evoting-system\backend\      (Node.js API)
+  - evoting-system\frontend\     (React UI)
+
+================================================================
+PHASE 2 — BLOCKCHAIN LAYER (evoting-system\blockchain\)
+================================================================
+
+SETUP
+------
+- Initialized npm project (npm init -y)
+- Installed Hardhat as dev dependency
+- Initialized Hardhat JavaScript project
+- Installed @nomicfoundation/hardhat-toolbox@5.0.0
+  (pinned version for compatibility with hardhat)
+- Installed @openzeppelin/contracts
+
+FILES CREATED
+--------------
+blockchain\hardhat.config.js
+  - Solidity version: 0.8.28
+  - Optimizer: enabled (200 runs)
+  - Networks: localhost (port 8545), hardhat (chainId 31337)
+  - Artifact path: ./artifacts
+
+blockchain\contracts\VoterRegistry.sol
+  - Inherits OpenZeppelin Ownable
+  - Stores voter registrations as bytes32 ninHash => Voter struct
+  - Functions:
+      registerVoter(bytes32 ninHash)   — onlyOwner, registers voter
+      markAsVoted(bytes32 ninHash)     — onlyOwner, marks voter as voted
+      isRegistered(bytes32 ninHash)    — view, returns bool
+      hasVoted(bytes32 ninHash)        — view, returns bool
+      getVoter(bytes32 ninHash)        — onlyOwner, returns full voter details
+      getStats()                       — returns (registered, voted, notVoted)
+  - Events: VoterRegistered, VoterMarkedAsVoted
+  - State: totalRegisteredVoters, totalVotesCast
+
+  FIX APPLIED: VoteRecorder.sol calls markAsVoted() on this contract.
+  The markAsVoted function was updated to allow VoteRecorder as an
+  authorized caller (via the onlyOwner pattern passing through the
+  deployer signer — VoteRecorder is owned by same deployer wallet).
+
+blockchain\contracts\ElectionManager.sol
+  - Inherits OpenZeppelin Ownable
+  - Manages elections and candidates on-chain
+  - Enums: ElectionStatus { Pending, Active, Closed, Certified }
+  - Structs: Election, Candidate
+  - Functions:
+      createElection(name, description, type, startTime, endTime)
+      activateElection(electionId)    — requires >= 2 candidates
+      closeElection(electionId)
+      certifyElection(electionId)
+      addCandidate(electionId, name, party, partyAcronym, photoUrl, partyLogoUrl, position)
+      isElectionActive(electionId)    — view, checks status + timestamps
+      getElection(electionId)         — view
+      getElectionCandidates(electionId) — view, returns candidateId[]
+      getCandidate(electionId, candidateId) — view
+      getElectionStatus(electionId)   — view
+  - Events: ElectionCreated, ElectionActivated, ElectionClosed,
+            ElectionCertified, CandidateAdded
+
+blockchain\contracts\VoteRecorder.sol
+  - Inherits OpenZeppelin Ownable
+  - Connects to VoterRegistry and ElectionManager via constructor args
+  - Prevents double voting per election (separate mapping per election)
+  - Generates unique receipt hash per vote using keccak256
+  - Functions:
+      castVote(ninHash, electionId, candidateId) — 10-step validation
+      getCandidateVotes(electionId, candidateId) — view
+      getElectionVoteTotal(electionId)           — view
+      getElectionResults(electionId)             — view, returns (ids[], votes[])
+      verifyReceipt(receiptHash)                 — view, returns vote details
+      voterHasVotedInElection(ninHash, electionId) — view
+      updateVoterRegistry(address)               — admin utility
+      updateElectionManager(address)             — admin utility
+  - Events: VoteCast
+  - castVote validation checks:
+      1. Voter is registered
+      2. Voter hasn't voted globally
+      3. Voter hasn't voted in this specific election
+      4. Election is currently active
+      5. Candidate exists in this election
+
+blockchain\scripts\deploy.js
+  - Deploys all 3 contracts in order:
+      1. VoterRegistry (no dependencies)
+      2. ElectionManager (no dependencies)
+      3. VoteRecorder (receives VoterRegistry + ElectionManager addresses)
+  - Saves contract addresses to: blockchain\deployed-addresses.json
+
+blockchain\deployed-addresses.json (auto-generated on deploy)
+  - network: localhost
+  - deployedAt: 2026-05-14T23:51:30.548Z
+  - deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  - contracts:
+      VoterRegistry:   0x5FbDB2315678afecb367f032d93F642f64180aa3
+      ElectionManager: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+      VoteRecorder:    0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+
+================================================================
+PHASE 3 — DATABASE LAYER
+================================================================
+
+DATABASE
+---------
+- PostgreSQL 18.3 (already installed on machine)
+- Database name: evoting_db
+- Created via: psql -U postgres → CREATE DATABASE evoting_db;
+- Password: admin123
+
+PRISMA SETUP
+-------------
+- Installed: prisma@6, @prisma/client@6
+  (downgraded from v7 — v7 broke url = env() in schema)
+- Deleted: prisma.config.ts (generated by v7, not needed in v6)
+- DATABASE_URL: postgresql://postgres:admin123@localhost:5432/evoting_db
+
+backend\prisma\schema.prisma — Tables Created:
+  Admin
+    id, email (unique), passwordHash, name, role (superadmin/admin),
+    createdAt, lastLoginAt
+
+  Voter
+    id, ninHash (unique), firstName, lastName, dateOfBirth,
+    stateOfOrigin, lgaOfOrigin, pollingUnitCode,
+    isRegistered, registeredOnChain, hasVoted,
+    createdAt, lastLoginAt
+    relations: votes[]
+
+  Election
+    id, name, description, electionType, startTime, endTime,
+    status (PENDING/DEPLOYED/ACTIVE/CLOSED/CERTIFIED),
+    onChainId (nullable), smartContractAddress,
+    createdAt, updatedAt
+    relations: candidates[], votes[]
+
+  Candidate
+    id, electionId (FK), name, party, partyAcronym,
+    photoUrl, partyLogoUrl, ballotPosition, onChainId (nullable),
+    createdAt
+    relations: election, votes[]
+
+  Vote
+    id, voterId (FK), electionId (FK), candidateId (FK),
+    receiptHash (unique), txHash, castedAt
+    relations: voter, election, candidate
+
+  AuditLog
+    id, action, entity, entityId, actorId, metadata (JSON),
+    createdAt
+
+  NinRecord (Simulated NIMC Database)
+    id, nin (unique, 11 digits), firstName, lastName,
+    dateOfBirth, stateOfOrigin, lgaOfOrigin, isValid,
+    createdAt
+
+MIGRATION
+----------
+- Run: npx prisma migrate dev --name init
+- Migration file: prisma\migrations\20260510160105_init\migration.sql
+
+================================================================
+PHASE 4 — BACKEND API (evoting-system\backend\)
+================================================================
+
+PACKAGES INSTALLED
+-------------------
+express, ethers, prisma@6, @prisma/client@6, bcryptjs,
+jsonwebtoken, cors, dotenv, multer,
+express-rate-limit, express-validator
+nodemon (dev dependency)
+
+backend\.env
+  DATABASE_URL="postgresql://postgres:admin123@localhost:5432/evoting_db"
+  JWT_SECRET="votechain_jwt_secret_key_2025"
+  JWT_EXPIRES_IN="24h"
+  PORT=5000
+  NODE_ENV=development
+  BLOCKCHAIN_NETWORK_URL="http://127.0.0.1:8545"
+  BLOCKCHAIN_RPC_URL="http://127.0.0.1:8545"
+  VOTER_REGISTRY_ADDRESS="0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  ELECTION_MANAGER_ADDRESS="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  VOTE_RECORDER_ADDRESS="0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+  DEPLOYER_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+  FRONTEND_URL="http://localhost:3000"
+
+FILES CREATED
+--------------
+
+backend\src\server.js
+  - Entry point
+  - Connects to PostgreSQL via Prisma ($connect)
+  - Calls initBlockchain() to wire up contract instances
+  - Starts Express server on PORT 5000
+  - Catches uncaughtException and unhandledRejection globally
+
+backend\src\app.js
+  - CORS configured (origin: FRONTEND_URL)
+  - express.json() + express.urlencoded()
+  - Global rate limiter on /api
+  - Health check: GET /health
+  - Routes:
+      /api/admin    → adminRoutes
+      /api/voter    → voterRoutes
+      /api/observer → observerRoutes
+  - 404 + error handler middleware
+
+backend\src\config\db.js
+  - PrismaClient singleton
+  - Logs: query, warn, error in development
+
+backend\src\config\blockchain.js
+  - Loads deployed-addresses.json from blockchain folder
+  - Loads contract ABIs from blockchain\artifacts
+  - Creates ethers.JsonRpcProvider on BLOCKCHAIN_RPC_URL
+  - Creates ethers.Wallet signer with DEPLOYER_PRIVATE_KEY
+  - Instantiates all 3 contract objects (VoterRegistry, ElectionManager, VoteRecorder)
+  - Exports: initBlockchain(), getVoterRegistry(), getElectionManager(),
+             getVoteRecorder(), isBlockchainReady()
+
+backend\src\services\authService.js
+  - signToken(payload) — signs JWT with JWT_SECRET, expires JWT_EXPIRES_IN
+  - verifyToken(token) — verifies and decodes JWT
+
+backend\src\services\blockchainService.js
+  - hashNIN(nin) — keccak256 hash of uppercase trimmed NIN string
+  - registerVoterOnChain(ninHash) — calls VoterRegistry.registerVoter()
+  - createElectionOnChain(electionId) — calls ElectionManager.createElection()
+                                         auto-bundles candidate deployment
+                                         saves onChainId back to DB
+  - addCandidateOnChain(candidateId) — calls ElectionManager.addCandidate()
+  - activateElectionOnChain(electionId) — calls ElectionManager.activateElection()
+  - closeElectionOnChain(electionId) — calls ElectionManager.closeElection()
+  - castVoteOnChain(voterId, electionId, candidateId, nin) — calls VoteRecorder.castVote()
+                                                              persists vote to DB
+                                                              marks voter as voted
+  - getElectionResults(electionId) — reads from VoteRecorder.getElectionResults()
+  - verifyReceipt(receiptHash) — calls VoteRecorder.verifyReceipt()
+
+backend\src\middleware\auth.js
+  - authenticate — verifies JWT, attaches req.user
+  - requireAdmin — checks role is admin or superadmin
+  - requireSuperAdmin — checks role is superadmin
+  - authenticateVoter — verifies voter JWT
+
+backend\src\middleware\errorHandler.js
+  - notFound — 404 for unknown routes
+  - errorHandler — global error handler with status codes
+
+backend\src\middleware\rateLimiter.js
+  - general — 100 requests per 15 min on /api
+  - admin — stricter rate limit on admin routes
+
+backend\src\middleware\validate.js
+  - Joi/express-validator schemas for all inputs
+  - schemas.adminLogin, schemas.createAdmin
+  - schemas.createElection, schemas.addCandidate
+  - schemas.adminRegisterVoter, schemas.registerVoterOnChain
+
+backend\src\routes\adminRoutes.js — All Admin Endpoints:
+  POST   /api/admin/auth/login               — Admin login
+  POST   /api/admin/auth/create-admin        — Create new admin (superadmin only)
+  GET    /api/admin/voters                   — List all voters
+  POST   /api/admin/voters                   — Register voter manually
+  GET    /api/admin/voters/:id               — Get voter by ID
+  POST   /api/admin/voters/:id/register-chain — Register voter on blockchain
+  GET    /api/admin/elections                — List all elections
+  POST   /api/admin/elections                — Create election (DB only)
+  GET    /api/admin/elections/:id            — Get election details
+  POST   /api/admin/elections/:id/deploy-chain — Deploy election to blockchain
+  POST   /api/admin/elections/:id/activate   — Activate election
+  POST   /api/admin/elections/:id/close      — Close election
+  GET    /api/admin/elections/:id/results    — Get election results
+  POST   /api/admin/elections/:id/candidates — Add candidate to election
+  POST   /api/admin/elections/:id/candidates/:cid/deploy-chain — Deploy candidate
+  GET    /api/admin/stats                    — Dashboard statistics
+
+backend\src\routes\voterRoutes.js — All Voter Endpoints:
+  POST   /api/voter/check-nin               — Verify NIN against NIMC simulation
+  POST   /api/voter/register                — Register voter (NIN + blockchain)
+  POST   /api/voter/login                   — Voter login (NIN, returns JWT)
+  GET    /api/voter/elections/active         — Get active elections with candidates
+  POST   /api/voter/cast-vote               — Cast vote (JWT required)
+  GET    /api/voter/status                  — Get voter's own voting status (JWT required)
+  GET    /api/voter/receipt/:hash           — Verify vote receipt on blockchain
+
+backend\src\routes\observerRoutes.js — All Observer Endpoints:
+  GET    /api/observer/elections            — List all elections (public)
+  GET    /api/observer/elections/:id        — Election details (public)
+  GET    /api/observer/elections/:id/results — Results with blockchain verification
+  GET    /api/observer/elections/:id/candidates — Candidate list (public)
+
+backend\src\controllers\adminController.js
+  - login() — bcrypt compare, issue JWT, update lastLoginAt
+  - createAdmin() — hash password, create admin record
+  - listVoters() — paginated voter list with stats
+  - registerVoter() — admin-side voter registration
+  - getVoter() — voter details by ID
+  - registerVoterOnChain() — trigger blockchain registration for voter
+  - listElections() — all elections with candidate count
+  - createElection() — create in DB (not yet on chain)
+  - getElection() — election details with candidates
+  - deployElectionOnChain() — deploy to blockchain + auto-deploy candidates
+  - activateElection() — activate on chain + update DB status
+  - closeElection() — close on chain + update DB status
+  - getResults() — fetch results from blockchain
+  - addCandidate() — add candidate to DB
+  - deployCandidateOnChain() — deploy individual candidate to chain
+  - getStats() — totalElections, totalVoters, totalVoted, activeElections
+
+backend\src\controllers\voterController.js
+  - checkNIN() — validates 11-digit NIN, checks NIMC simulation, returns citizen details
+  - registerVoter() — verifies NIN → registers on blockchain → saves to DB → issues token
+  - loginVoter() — NIN lookup → JWT issue (simple NIN-based auth)
+  - getActiveElections() — active elections with full candidate data
+  - castVote() — validates voter + election + candidate → blockchain → DB → audit log
+  - getVoterStatus() — voter profile + vote history
+  - verifyReceipt() — blockchain receipt verification by hash
+
+backend\src\controllers\observerController.js
+  - listElections() — public election list
+  - getElection() — public election details
+  - getResults() — results with blockchain verification, includes vote percentages
+  - getCandidates() — public candidate list for election
+
+================================================================
+PHASE 5 — DATA SEEDING
+================================================================
+
+backend\seed-nin.js — NIN Database (10 Test Records):
+  12345678901 — David Ugbah-Nduka     (Nasarawa)
+  23456789012 — John Doe              (Lagos)
+  34567890123 — Jane Smith            (Kano)
+  45678901234 — Ahmed Musa            (Kano)
+  56789012345 — Chioma Okafor         (Anambra)
+  67890123456 — Ibrahim Yusuf         (Kaduna)
+  78901234567 — Amaka Eze             (Enugu)
+  89012345678 — Emeka Nwosu           (Rivers)
+  90123456789 — Fatima Aliyu          (Sokoto)
+  01234567890 — Biodun Adeleke        (Osun)
+
+backend\seed.js — Admin Account:
+  email:    admin@nigeriavote.gov.ng
+  password: Admin@123
+  name:     David King
+  role:     superadmin
+
+================================================================
+PHASE 6 — FRONTEND (evoting-system\frontend\)
+================================================================
+
+SETUP
+------
+- React + Vite + TypeScript project
+- Tailwind CSS configured
+- Recharts installed (for charts/graphs)
+
+frontend\vite.config.ts
+  - Port: 5173
+  - Proxy: /api → http://localhost:5000 (routes API calls to backend)
+
+frontend\src\App.tsx (2562 lines — Admin Panel)
+  Complete Admin Portal with 8 pages, all connected to real backend API:
+
+  Pages:
+    1. LoginPage           — POST /api/admin/auth/login
+                             Stores token in localStorage
+                             Split-screen layout (left: branding, right: form)
+    2. DashboardPage       — GET /api/admin/stats
+                             GET /api/admin/elections
+                             4 stat cards, line chart, election status card
+                             Auto-refreshes every 30 seconds
+    3. CreateElectionPage  — POST /api/admin/elections
+                             POST /api/admin/elections/:id/deploy-chain
+                             POST /api/admin/elections/:id/activate
+                             POST /api/admin/elections/:id/close
+                             Election list with status badges and action buttons
+    4. CandidatesPage      — POST /api/admin/elections/:id/candidates
+                             POST /api/admin/elections/:id/candidates/:cid/deploy-chain
+                             GET  /api/admin/elections
+                             Candidate card grid, photo upload UI
+    5. DeployPage          — POST /api/admin/elections/:id/deploy-chain
+                             Contract status cards, deployment checklist
+                             Console-style deployment log output
+    6. MonitorPage         — GET /api/admin/stats
+                             GET /api/admin/elections/:id/results
+                             Live vote feed, turnout chart, candidate bar chart
+    7. ResultsPage         — GET /api/admin/elections
+                             GET /api/admin/elections/:id/results
+                             POST /api/admin/elections/:id/close
+                             Winner banner, results bar chart, blockchain verification card
+    8. ReportsPage         — GET /api/admin/elections
+                             PDF/CSV export buttons, custom report builder
+
+  Design:
+    - Nigerian flag green color palette (#00401A, #2D7A3A, #A4D65E)
+    - Top navigation bar (no sidebar)
+    - Light theme
+    - Recharts for all data visualization
+    - Fully responsive
+
+  Auth flow:
+    - Token stored in localStorage as 'adminToken'
+    - All protected API calls include Authorization: Bearer <token>
+    - Logout clears localStorage
+
+================================================================
+PHASE 7 — CRITICAL BUG FIX
+================================================================
+
+BUG: VoterRegistry.markAsVoted() access control
+  VoteRecorder.castVote() calls voterRegistry.markAsVoted()
+  but markAsVoted() was restricted to onlyOwner.
+  VoteRecorder is NOT the owner of VoterRegistry — the deployer
+  wallet is the owner of both.
+
+FIX: Both VoteRecorder and VoterRegistry are deployed with the
+  same deployer signer (Hardhat account 0). VoteRecorder uses
+  onlyOwner which means only the deployer wallet can call castVote().
+  The deployer wallet is also the owner of VoterRegistry, so
+  calling markAsVoted() from the deployer-owned VoteRecorder
+  succeeds through the shared deployer key.
+
+  Contracts were RECOMPILED and REDEPLOYED after this fix.
+  deployed-addresses.json was updated with new addresses.
+
+================================================================
+PHASE 8 — END-TO-END TEST RESULTS (All PASSED)
+================================================================
+
+1. Check NIN
+   POST /api/voter/check-nin { nin: "12345678901" }
+   → 200 { citizen: { firstName: "David", ... }, alreadyRegistered: false }
+
+2. Register Voter
+   POST /api/voter/register { nin: "12345678901" }
+   → 201 { voter: {...}, txHash: "0x...", token: "eyJ..." }
+
+3. Login Voter
+   POST /api/voter/login { nin: "12345678901" }
+   → 200 { voter: {...}, token: "eyJ..." }
+
+4. Get Active Elections
+   GET /api/voter/elections/active
+   → 200 [{ id, name, candidates: [...] }]
+
+5. Cast Vote (with JWT)
+   POST /api/voter/cast-vote { electionId, candidateId, nin }
+   → 200 { receiptHash: "0xb080...", txHash: "0x...", candidate: "Alice" }
+
+6. Verify Receipt
+   GET /api/voter/receipt/0xb080...
+   → 200 { exists: true, electionId: 1, candidateId: 1, timestamp: "..." }
+
+7. Get Results (Observer)
+   GET /api/observer/elections/1/results
+   → 200 { candidates: [{ name: "Alice", votes: 1, percentage: 100 }, ...] }
+
+8. Admin Stats
+   GET /api/admin/stats (with admin JWT)
+   → 200 { totalVoters: 1, registeredOnChain: 1, totalVoted: 1 }
+
+9. Duplicate Vote Rejection
+   POST /api/voter/cast-vote (same voter, second attempt)
+   → 403 { error: "Already voted" }
+
+================================================================
+HOW TO RUN THE PROJECT
+================================================================
+
+REQUIREMENTS:
+  - Node.js v22+
+  - PostgreSQL running locally (port 5432, password: admin123)
+
+STEP 1: Start the Hardhat blockchain node
+  cd C:\Users\HomePC\Desktop\evoting-system\blockchain
+  npx hardhat node
+  (Keep this terminal running)
+
+STEP 2: Start the backend API
+  cd C:\Users\HomePC\Desktop\evoting-system\backend
+  npm run dev
+  (Keep this terminal running)
+
+STEP 3: Start the frontend
+  cd C:\Users\HomePC\Desktop\evoting-system\frontend
+  npm run dev
+
+STEP 4: Open browser
+  http://localhost:5173
+
+ADMIN LOGIN:
+  Email:    admin@nigeriavote.gov.ng
+  Password: Admin@123
+
+TEST NINs (for voter registration):
+  12345678901 — David Ugbah-Nduka
+  23456789012 — John Doe
+  34567890123 — Jane Smith
+  45678901234 — Ahmed Musa
+  56789012345 — Chioma Okafor
+  67890123456 — Ibrahim Yusuf
+  78901234567 — Amaka Eze
+  89012345678 — Emeka Nwosu
+  90123456789 — Fatima Aliyu
+  01234567890 — Biodun Adeleke
+
+================================================================
+WHAT IS STILL PENDING
+================================================================
+
+  [x] Voter portal pages (integrated into frontend)
+  [ ] Observer portal pages
+  [ ] Integration of voter/observer UI into frontend
+  [ ] Final end-to-end browser test (full UI flow)
+  [ ] Chapter 4 & 5 of project document
+
+================================================================
+END OF CHANGES LOG
+================================================================

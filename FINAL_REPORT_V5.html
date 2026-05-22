@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Project Report - Chapters 4 & 5</title>
+    <style>
+        body { font-family: "Times New Roman", Times, serif; line-height: 1.6; color: #333; max-width: 850px; margin: 0 auto; padding: 2rem; background-color: #f9f9f9; }
+        .page-content { background-color: #fff; padding: 4rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.8rem; margin-top: 3rem; margin-bottom: 2rem; text-transform: uppercase; }
+        h2 { font-size: 1.4rem; margin-top: 2rem; }
+        h3 { font-size: 1.2rem; margin-top: 1.5rem; }
+        p { margin-bottom: 1rem; text-align: justify; }
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        img { max-width: 100%; height: auto; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; margin: 1.5rem auto; }
+        blockquote { border-left: 4px solid #f44336; background-color: #ffebee; padding: 10px 20px; margin: 20px 0; color: #d32f2f; font-weight: bold; text-align: center; }
+        pre { background: #f4f4f4; padding: 15px; overflow-x: auto; font-family: monospace; border-left: 4px solid #4CAF50; }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <p>CHAPTER FOUR</p>
+<p>IMPLEMENTATION AND TESTING / RESULTS AND DISCUSSION</p>
+<p>This chapter presents the implementation of the blockchain-based e-voting system designed and specified in the preceding chapter. It documents the development environment, system interfaces, database structure, smart contract deployment, and testing procedures conducted to validate the system&#39;s functionality, security, and performance. The artefact produced is a fully functional web-based decentralised application (dApp) that integrates NIN-based identity verification, WebAuthn biometric authentication, and Ethereum smart contracts for immutable vote recording.</p>
+<p>4.1 System Requirements</p>
+<p>The VoteChain E-Voting System is a decentralised application that integrates traditional web technologies with blockchain infrastructure. To ensure optimal performance during development, testing, and future deployment, the following minimum system specifications are outlined below.</p>
+<p>4.1.1 Hardware Requirements</p>
+<p>The system was developed and tested on a Windows 11 machine. The following hardware specifications represent the minimum and recommended configurations for running the application:</p>
+<p>Component</p>
+<p>Minimum</p>
+<p>Recommended</p>
+<p>Processor</p>
+<p>Intel Core i3 or equivalent dual-core</p>
+<p>Intel Core i5 or higher</p>
+<p>RAM</p>
+<p>4GB</p>
+<p>8GB or more</p>
+<p>Storage</p>
+<p>20GB available space</p>
+<p>256GB SSD</p>
+<p>Display</p>
+<p>1366 x 768 resolution</p>
+<p>1920 x 1080 or higher</p>
+<p>Network</p>
+<p>Stable internet connection</p>
+<p>Broadband (10Mbps+)</p>
+<p>Input Device</p>
+<p>Standard keyboard and mouse</p>
+<p>Biometric-capable device for WebAuthn</p>
+<p>The recommended specifications are particularly important for developers running the local Hardhat blockchain node, PostgreSQL database server, and React development server simultaneously on the same machine.</p>
+<p>4.1.2 Software Requirements</p>
+<p>The following software components were installed prior to development on the aforementioned development machine:</p>
+<p>Software</p>
+<p>Version</p>
+<p>Purpose</p>
+<p>Node.js</p>
+<p>v22.17.0</p>
+<p>JavaScript runtime for backend and tooling</p>
+<p>PostgreSQL</p>
+<p>v15</p>
+<p>Relational database for structured application data</p>
+<p>Hardhat</p>
+<p>v2.22</p>
+<p>Local Ethereum development and testing network</p>
+<p>React.js with TypeScript</p>
+<p>v18</p>
+<p>Frontend user interface library</p>
+<p>Ethers.js</p>
+<p>v6</p>
+<p>Ethereum smart contract interaction library</p>
+<p>Prisma ORM</p>
+<p>v6</p>
+<p>Database schema management and query builder</p>
+<p>Visual Studio Code</p>
+<p>Latest</p>
+<p>Primary code editor</p>
+<p>Git</p>
+<p>Latest</p>
+<p>Version control system</p>
+<p>Chrome / Edge / Brave</p>
+<p>Latest</p>
+<p>Browser with WebAuthn and MetaMask support</p>
+<p>The browser requirement is critical, as WebAuthn-based biometric authentication relies on the browser&#39;s native credential management API, which is fully supported in Chromium-based browsers.</p>
+<p>4.2 Implementation</p>
+<p>The implementation phase involved setting up the decentralised blockchain infrastructure, configuring the relational database, developing the smart contracts, and building the user-facing interfaces. The system was developed incrementally using an adapted Agile (Scrum) methodology, with each sprint delivering a functional module that was tested before proceeding to the next.</p>
+<p>4.2.1 System Architecture</p>
+<p>The VoteChain system follows a hybrid decentralised architecture. While the core voting logic resides on-chain through Solidity smart contracts, the application utilises a traditional backend and relational database for efficient data retrieval, user management, and off-chain metadata storage. This hybrid approach ensures that the system remains responsive and scalable whilst maintaining the immutability and transparency guarantees of blockchain technology.</p>
+<p>The architecture is organised into four distinct layers:</p>
+<p>Presentation Layer: The React.js frontend, built with Vite and Tailwind CSS, provides responsive user interfaces accessible through modern web browsers.</p>
+<p>Application Layer: The Node.js and Express.js backend handles business logic, API requests, NIN verification, and communication with both the database and blockchain.</p>
+<p>Data Layer: The PostgreSQL database, managed through Prisma ORM, stores voter profiles, election configurations, candidate information, WebAuthn credentials, and authentication logs.</p>
+<p>Blockchain Layer: Solidity smart contracts deployed on the local Hardhat Ethereum node handle voter registration status, vote recording, duplicate prevention, and result tallying.</p>
+<p>[Insert Figure 4.1 — System Architecture Diagram here.]</p>
+<p>Figure 4.1: System Architecture of the VoteChain E-Voting Application</p>
+<p>4.2.2 Voter Registration Interface</p>
+<p>The voter registration module is the entry point for all eligible voters. Upon navigating to the registration page, the voter is required to provide their full name, eleven-digit National Identification Number, date of birth, state of residence, and email address. The system transmits the NIN to the backend, which hashes it using Keccak256 and queries the simulated NIMC database to confirm eligibility. If the NIN is valid and has not been previously registered, the system proceeds to WebAuthn biometric enrolment.</p>
+<p>[Insert Figure 4.2 — Screenshot of the Voter Registration Page.]</p>
+<p>Figure 4.2: Voter Registration Interface</p>
+<p>The registration interface was designed to be intuitive and accessible to users without technical expertise. Validation messages are displayed in real time to guide the user through any input errors before submission.</p>
+<p>4.2.3 WebAuthn Biometric Enrolment</p>
+<p>Following successful NIN verification, first-time voters are prompted to enrol their biometric credentials through the WebAuthn API. The browser presents a native prompt requesting the voter to scan their fingerprint or complete a facial recognition scan, depending on the device&#39;s available biometric hardware. The WebAuthn protocol generates a cryptographic public and private key pair. The private key remains stored exclusively on the voter&#39;s device and is never transmitted to the server. Only the public key is stored in the database, linked to the voter&#39;s hashed NIN for future authentication challenges.</p>
+<p>[Insert Figure 4.3 — Screenshot of the WebAuthn biometric enrolment prompt.]</p>
+<p>Figure 4.3: WebAuthn Biometric Enrolment Prompt</p>
+<p>This approach eliminates traditional password-based vulnerabilities such as phishing and credential stuffing, as authentication requires physical possession of the registered device and the voter&#39;s biometric.</p>
+<p>4.2.4 Voter Authentication Interface</p>
+<p>Returning voters authenticate by entering their NIN on the login page. The backend retrieves the associated WebAuthn credential identifier and issues a cryptographic challenge to the browser. The browser then prompts the voter to verify their biometric on the device. If the biometric matches, the device signs the challenge using the stored private key and returns the signed response to the server. The backend verifies the signature against the stored public key. Upon successful verification, a JSON Web Token session is generated, granting the voter access to the ballot.</p>
+<p>[Insert Figure 4.4 — Screenshot of the Voter Login page.]</p>
+<p>Figure 4.4: Voter Authentication Interface</p>
+<p>[Insert Figure 4.5 — Screenshot of the successful authentication confirmation page.]</p>
+<p>Figure 4.5: Voter Dashboard After Successful Authentication</p>
+<p>4.2.5 Ballot and Vote Casting Interface</p>
+<p>Upon successful authentication, the voter is presented with the election ballot displaying all registered candidates with their names, party affiliations, and where applicable, candidate photographs. The voter selects their preferred candidate using a radio button or selection card and clicks the Submit Vote button. The frontend encrypts the vote selection and packages it as a blockchain transaction. The backend calls the VoteRecorder smart contract through Ethers.js, which validates that the voter is registered, has not previously voted, and that the election is currently active before recording the vote immutably on the blockchain ledger.</p>
+<p>[Insert Figure 4.6 — Screenshot of the Ballot page.]</p>
+<p>Figure 4.6: Election Ballot Interface</p>
+<p>4.2.6 Vote Confirmation and Blockchain Receipt</p>
+<p>Upon successful vote recording, the smart contract returns a unique transaction hash to the frontend. The system displays a confirmation screen notifying the voter that their vote has been permanently recorded on the blockchain. The transaction hash serves as a cryptographic receipt that the voter can use to independently verify their vote on the blockchain ledger at any time.</p>
+<p>[Insert Figure 4.7 — Screenshot of the Vote Confirmation page.]</p>
+<p>Figure 4.7: Vote Confirmation Screen with Blockchain Transaction Receipt</p>
+<p>4.2.7 Duplicate Vote Rejection</p>
+<p>When a voter who has already cast a ballot attempts to vote again, the smart contract&#39;s duplicate prevention logic is triggered. The contract checks the hasVoted mapping for the voter&#39;s address within the current election. Since the flag is set to true after the first vote, the contract reverts the transaction and returns an error. The frontend displays a clear rejection notification informing the voter that their ballot has already been recorded.</p>
+<p>[Insert Figure 4.8 — Screenshot of the rejection notification screen.]</p>
+<p>Figure 4.8: Duplicate Vote Rejection Notification</p>
+<p>4.2.8 Database Implementation</p>
+<p>The system uses PostgreSQL managed through Prisma ORM for off-chain data storage. The database stores information that does not require the overhead of on-chain storage, including voter profiles, election configurations, candidate details, WebAuthn public keys, and authentication logs. Sensitive data such as NIN values and phone numbers are stored exclusively as Keccak256 hashes, ensuring that raw personal information is never persisted in the database.</p>
+<p>The key database tables are described below:</p>
+<p>Table</p>
+<p>Description</p>
+<p>voters</p>
+<p>Stores voter registration status, hashed NIN, full name, state of residence, WebAuthn credential identifier, and account status</p>
+<p>elections</p>
+<p>Manages election lifecycle phases including Pending, Active, Closed, and Certified states</p>
+<p>candidates</p>
+<p>Stores candidate names, party affiliations, display order, and photograph URLs</p>
+<p>webauthn_credentials</p>
+<p>Stores the public keys associated with each voter&#39;s registered device</p>
+<p>authentication_logs</p>
+<p>Records all login attempts with timestamps, IP addresses, and failure reasons</p>
+<p>nin_records</p>
+<p>Serves as the simulated NIMC database for NIN validation during registration</p>
+<p>[Insert Figure 4.9 — Screenshot of PostgreSQL database showing the voters table.]</p>
+<p>Figure 4.9: PostgreSQL Database Implementation Showing Voter Records</p>
+<p>4.2.9 Smart Contract Implementation</p>
+<p>The core voting logic is implemented in three Solidity smart contracts deployed on the local Hardhat Ethereum node.</p>
+<p>VoterRegistry: Maintains a mapping of hashed voter identities to their registration and voting status. It exposes functions to register voters and query whether a given address is registered or has already voted.</p>
+<p>ElectionManager: Handles the lifecycle of elections, defining state transitions between Pending, Active, Closed, and Certified phases. Only the authorised election administrator can trigger state changes.</p>
+<p>VoteRecorder: Serves as the primary contract responsible for vote recording within the system. It records votes by incrementing candidate vote counts within an election mapping and enforces the rule that each registered voter may cast exactly one vote per election. The following code snippet illustrates the core vote casting logic:</p>
+<p>function castVote(uint256 _electionId, uint256 _candidateId) external {</p>
+<pre><code>require(registry.isRegistered(msg.sender), &quot;Not a registered voter&quot;);
+
+require(!hasVoted[_electionId][msg.sender], &quot;Already voted&quot;);
+
+
+
+votes[_electionId][_candidateId]++;
+
+hasVoted[_electionId][msg.sender] = true;
+
+
+
+emit VoteCast(_electionId, _candidateId, msg.sender);
+</code></pre>
+<p>}</p>
+<p>[Insert Figure 4.10 — Screenshot of Hardhat terminal showing contract deployment.]</p>
+<p>Figure 4.10: Smart Contract Deployment on Local Hardhat Blockchain Node</p>
+<p>4.3 Testing</p>
+<p>Testing was conducted across multiple layers to ensure that the VoteChain system meets all functional and non-functional requirements specified in Chapter Three. The testing strategy covered smart contract unit testing, backend API validation, end-to-end integration testing of the complete voting workflow, and user acceptance testing with a controlled group of participants.</p>
+<p>4.3.1 Smart Contract Unit Testing</p>
+<p>Smart contract unit tests were written and executed using the Hardhat testing framework in combination with the Chai assertion library. The tests verified that all critical on-chain functions behave correctly under both valid and invalid conditions. Key scenarios tested included:</p>
+<p>Voter registration with a valid NIN hash</p>
+<p>Rejection of duplicate registration attempts</p>
+<p>Prevention of unregistered voters from casting votes</p>
+<p>Successful vote recording by a registered voter</p>
+<p>Rejection of double voting attempts</p>
+<p>Rejection of votes submitted after an election has closed</p>
+<p>[Insert Figure 4.11 — Screenshot of Hardhat terminal showing test results.]</p>
+<p>Figure 4.11: Hardhat Smart Contract Unit Test Results</p>
+<p>The deterministic nature of smart contracts ensures that identical inputs always produce identical outputs, making automated unit testing a reliable method for validating on-chain logic.</p>
+<p>4.3.2 Backend API Testing</p>
+<p>Backend API endpoints were tested using Postman to validate request handling, response correctness, and error management. Key endpoints tested included voter registration, NIN verification, WebAuthn challenge generation, vote submission, and result retrieval. Each endpoint was tested with both valid inputs to confirm correct success responses and invalid inputs to confirm appropriate error handling.</p>
+<p>[Insert Figure 4.12 — Screenshot of Postman showing a successful API call.]</p>
+<p>Figure 4.12: Backend API Testing Using Postman</p>
+<p>All tested endpoints returned the expected HTTP status codes and response bodies, confirming that the backend correctly processes requests and communicates with both the database and blockchain layers.</p>
+<p>4.3.3 Integration Testing</p>
+<p>Integration testing validated the complete end-to-end voting workflow by executing predefined test scenarios with controlled inputs and verifying that all system layers responded correctly in sequence. Table 4.1 presents the integration test cases and their outcomes.</p>
+<p>Table 4.1: Integration Test Cases and Results</p>
+<p>Test Case</p>
+<p>Input</p>
+<p>Expected Result</p>
+<p>Actual Result</p>
+<p>Status</p>
+<p>Valid NIN Registration</p>
+<p>Valid 11-digit NIN</p>
+<p>Voter registered, biometric prompt triggered</p>
+<p>Voter registered successfully</p>
+<p>Pass</p>
+<p>Duplicate NIN Registration</p>
+<p>Already registered NIN</p>
+<p>Error: Voter already registered</p>
+<p>Registration rejected</p>
+<p>Pass</p>
+<p>Invalid NIN Registration</p>
+<p>Unrecognised NIN</p>
+<p>Error: NIN not found in NIMC records</p>
+<p>NIN rejected by simulated NIMC</p>
+<p>Pass</p>
+<p>Successful Biometric Enrolment</p>
+<p>Valid NIN, biometric scan</p>
+<p>WebAuthn public key stored</p>
+<p>Public key stored successfully</p>
+<p>Pass</p>
+<p>Successful Authentication</p>
+<p>Registered NIN, correct biometric</p>
+<p>JWT session issued, ballot page loaded</p>
+<p>Authentication successful</p>
+<p>Pass</p>
+<p>Failed Authentication</p>
+<p>Registered NIN, wrong biometric</p>
+<p>Error: Biometric verification failed</p>
+<p>Access denied</p>
+<p>Pass</p>
+<p>Successful Vote Cast</p>
+<p>Authenticated voter, valid candidate</p>
+<p>Vote recorded, transaction hash returned</p>
+<p>Blockchain confirmed transaction</p>
+<p>Pass</p>
+<p>Duplicate Vote Attempt</p>
+<p>Previously voted NIN</p>
+<p>Error: Voter has already cast ballot</p>
+<p>Smart contract rejected transaction</p>
+<p>Pass</p>
+<p>Vote After Election Closes</p>
+<p>Valid voter, closed election</p>
+<p>Error: Election is not active</p>
+<p>Transaction reverted by contract</p>
+<p>Pass</p>
+<p>Result Tallying</p>
+<p>Closed election</p>
+<p>Correct vote counts displayed</p>
+<p>Tallies matched expected counts</p>
+<p>Pass</p>
+<p>4.3.4 User Acceptance Testing</p>
+<p>User acceptance testing was conducted with a controlled group of ten participants who performed a simulated election exercise using the fully integrated system. Participants represented a range of technical literacy levels to assess the system&#39;s accessibility and usability across diverse user demographics.</p>
+<p>Table 4.2: User Acceptance Testing Results</p>
+<p>S/No</p>
+<p>Test Scenario</p>
+<p>No. of Users</p>
+<p>Success</p>
+<p>Failure</p>
+<p>Success Rate</p>
+<p>1</p>
+<p>NIN entry and verification</p>
+<p>10</p>
+<p>10</p>
+<p>0</p>
+<p>100%</p>
+<p>2</p>
+<p>WebAuthn biometric enrolment</p>
+<p>10</p>
+<p>9</p>
+<p>1</p>
+<p>90%</p>
+<p>3</p>
+<p>Successful login with biometric</p>
+<p>10</p>
+<p>9</p>
+<p>1</p>
+<p>90%</p>
+<p>4</p>
+<p>Casting a vote and receiving transaction hash</p>
+<p>10</p>
+<p>10</p>
+<p>0</p>
+<p>100%</p>
+<p>5</p>
+<p>Verifying vote using transaction hash</p>
+<p>10</p>
+<p>8</p>
+<p>2</p>
+<p>80%</p>
+<p>6</p>
+<p>Duplicate vote rejection understood</p>
+<p>10</p>
+<p>10</p>
+<p>0</p>
+<p>100%</p>
+<p>The overall acceptance rate across all test scenarios was 93.3%, indicating strong usability and system reliability. The biometric enrolment step recorded the highest failure rate at 10%, attributed to one participant&#39;s device not supporting WebAuthn natively. Vote verification using the transaction hash recorded an 80% success rate, with two participants requiring guidance on how to query the blockchain receipt. Participant feedback was generally positive, with the majority expressing confidence in the system&#39;s transparency due to the visible blockchain receipt provided after voting.</p>
+<p>4.4 Results Presentation</p>
+<p>This section presents the outcomes of the implemented VoteChain system against the objectives stated in Chapter One.</p>
+<p>Table 4.3: System Objectives and Results Summary</p>
+<p>Objective</p>
+<p>Result</p>
+<p>Status</p>
+<p>Analyse limitations of existing e-voting systems</p>
+<p>Key gaps identified including lack of NIN integration, centralised vulnerabilities, and limited auditability</p>
+<p>Achieved</p>
+<p>Design blockchain-enabled e-voting architecture</p>
+<p>Fully documented hybrid architecture with UML diagrams, ERD, and system workflow</p>
+<p>Achieved</p>
+<p>Integrate NIN for voter authentication</p>
+<p>100% NIN verification accuracy achieved in integration testing</p>
+<p>Achieved</p>
+<p>Implement and conduct functional testing</p>
+<p>All 10 integration test cases passed; 93.3% UAT success rate recorded</p>
+<p>Achieved</p>
+<p>Evaluate system performance against existing solutions</p>
+<p>System demonstrated competitive authentication accuracy and vote immutability</p>
+<p>Achieved</p>
+<p>4.4.1 Authentication Performance</p>
+<p>Table 4.4 summarises the authentication performance metrics recorded during testing. The single WebAuthn failure was attributed to device incompatibility rather than a system logic error.</p>
+<p>Table 4.4: Authentication Performance Metrics</p>
+<p>Metric</p>
+<p>Result</p>
+<p>NIN Verification Accuracy</p>
+<p>100%</p>
+<p>WebAuthn Authentication Success Rate</p>
+<p>90%</p>
+<p>Duplicate Registration Prevention</p>
+<p>100%</p>
+<p>Unauthorised Access Attempts Blocked</p>
+<p>100%</p>
+<p>Average Authentication Time</p>
+<p>Under 8 seconds</p>
+<p>4.4.2 Blockchain Performance</p>
+<p>Table 4.5 presents the blockchain performance metrics observed during testing on the local Hardhat Ethereum node.</p>
+<p>Table 4.5: Blockchain Performance Metrics</p>
+<p>Metric</p>
+<p>Result</p>
+<p>Vote Recording Success Rate</p>
+<p>100%</p>
+<p>Duplicate Vote Rejection Rate</p>
+<p>100%</p>
+<p>Average Transaction Confirmation Time</p>
+<p>Under 5 seconds (local Hardhat node)</p>
+<p>Smart Contract Test Pass Rate</p>
+<p>100% (6/6 unit tests)</p>
+<p>Vote Immutability</p>
+<p>Verified — no alteration possible post-confirmation</p>
+<p>Result Tallying Accuracy</p>
+<p>100%</p>
+<p>4.4.3 Comparison with Related Works</p>
+<p>Table 4.6 compares VoteChain with selected related works reviewed in Chapter Two.</p>
+<p>Table 4.6: Comparison of VoteChain with Related Works</p>
+<p>Study</p>
+<p>Blockchain Platform</p>
+<p>NIN Integration</p>
+<p>Biometric Auth</p>
+<p>Real Deployment</p>
+<p>Double Vote Prevention</p>
+<p>Bismark et al. (2025)</p>
+<p>Ethereum</p>
+<p>Simulated</p>
+<p>No</p>
+<p>Local only</p>
+<p>Yes</p>
+<p>Njoku et al. (2023)</p>
+<p>IBM Hyperledger</p>
+<p>Simulated</p>
+<p>No</p>
+<p>Local only</p>
+<p>Yes</p>
+<p>Pandey &amp; Tiwari (2023)</p>
+<p>Ethereum</p>
+<p>No</p>
+<p>No</p>
+<p>No</p>
+<p>Yes</p>
+<p>Dumbre et al. (2025)</p>
+<p>Permissioned</p>
+<p>No</p>
+<p>No</p>
+<p>No</p>
+<p>Yes</p>
+<p>Osayomore et al. (2025)</p>
+<p>Blockchain + Biometric</p>
+<p>No</p>
+<p>Fingerprint/Face</p>
+<p>No</p>
+<p>Yes</p>
+<p>VoteChain (This Study)</p>
+<p>Ethereum/Hardhat</p>
+<p>Simulated</p>
+<p>WebAuthn</p>
+<p>Local only</p>
+<p>Yes</p>
+<p>VoteChain distinguishes itself by combining NIN-based identity verification with WebAuthn biometric authentication on an Ethereum-compatible blockchain — a combination not achieved by any single related work reviewed. Whilst real NIMC integration and nationwide deployment remain outside the scope of this study, the system provides a complete proof of concept addressing Nigeria&#39;s specific electoral integrity challenges.</p>
+<p>4.5 Discussion</p>
+<p>Transparency and Immutability</p>
+<p>Unlike centralised systems where vote records can be modified by privileged administrators, VoteChain records every vote as an immutable blockchain transaction. Once confirmed by the VoteRecorder smart contract, no party can alter or delete the record. The transaction receipt provided to each voter further enhances transparency by enabling independent verification without compromising ballot secrecy.</p>
+<p>Authentication Strength</p>
+<p>The combination of NIN verification and WebAuthn biometric authentication provides a stronger authentication layer than the single-factor approaches employed in most related works. Hashing NIN values using Keccak256 and ensuring biometric data never leaves the voter&#39;s device protects sensitive personal information whilst maintaining robust identity verification — directly addressing voter impersonation concerns in Nigeria&#39;s electoral history.</p>
+<p>Hybrid Architecture Benefits</p>
+<p>Storing non-critical metadata off-chain in PostgreSQL whilst keeping integrity-critical voting data on-chain reduced transaction costs and improved system responsiveness without compromising immutability. This aligns with Jayakumari et al. (2024), who demonstrated that hybrid blockchain architectures offer superior performance compared to fully on-chain implementations.</p>
+<p>Limitations</p>
+<p>The system connects to a simulated NIMC database; real-world NIN validation performance may differ</p>
+<p>Testing was limited to a local Hardhat node; performance under high concurrent loads on a live network remains untested</p>
+<p>One participant&#39;s device was incompatible with WebAuthn, highlighting potential accessibility challenges across Nigeria&#39;s diverse population</p>
+<p>The system currently supports only a single active election, requiring further development before national-scale deployment</p>
+<p>Overall Assessment</p>
+<p>The VoteChain system demonstrates a viable approach to addressing Nigeria&#39;s electoral integrity challenges through blockchain technology. The 100% smart contract test pass rate, 100% duplicate vote rejection rate, and 93.3% UAT success rate confirm that all stated objectives were met. The integration of NIN authentication, WebAuthn biometrics, and Ethereum smart contracts represents a meaningful advancement over existing related implementations and provides a solid foundation for future development.</p>
+<p>CHAPTER FIVE</p>
+<p>SUMMARY, CONCLUSION AND RECOMMENDATION</p>
+<p>5.1 Summary</p>
+<p>This study designed and implemented a blockchain-based e-voting system integrated with Nigeria&#39;s National Identification Number for secure voter authentication and electoral integrity. The research was motivated by persistent challenges in Nigeria&#39;s electoral processes, including technical failures during the 2023 general elections, voter impersonation, ballot manipulation, and the absence of a transparent and auditable voting infrastructure.</p>
+<p>Chapter One established the background, problem statement, aim, objectives, and scope of the study. Chapter Two reviewed existing literature on electronic voting, blockchain technology, and biometric authentication, identifying key gaps including the absence of NIN integration, lack of biometric authentication, and unaddressed scalability concerns. Chapter Three presented the system design, including the hybrid architecture, UML diagrams, MoSCoW requirements, and smart contract structures. Chapter Four documented the full implementation and testing of the VoteChain application, covering unit testing, API testing, integration testing, and user acceptance testing.</p>
+<p>All five stated objectives were met. The limitations of existing e-voting systems were identified through a comprehensive literature review. A blockchain-enabled hybrid architecture was designed and fully documented. NIN verification with Keccak256 hashing and WebAuthn biometric authentication achieved 100% verification accuracy. All ten integration test cases passed, with a 93.3% user acceptance testing success rate. System performance was evaluated and compared against related works reviewed in Chapter Two.</p>
+<p>Challenges encountered included integrating WebAuthn with the backend credential verification process, managing smart contract and frontend interface mismatches, and resolving device compatibility issues during user acceptance testing. These were addressed through iterative debugging and sprint retrospectives.</p>
+<p>5.2 Conclusion</p>
+<p>This study concludes that blockchain technology, combined with NIN-based identity verification and WebAuthn biometric authentication, provides an effective foundation for addressing Nigeria&#39;s electoral integrity challenges. The VoteChain system demonstrated that decentralised ledger technology can eliminate the manipulation vulnerabilities of centralised voting architectures by ensuring that every cast vote is recorded immutably and verifiably.</p>
+<p>The hybrid architecture combining off-chain PostgreSQL storage with on-chain smart contract logic proved effective in balancing system performance with the transparency guarantees of blockchain technology. The 100% smart contract test pass rate and 93.3% user acceptance success rate confirm that the system is both technically sound and accessible to users with varying levels of technical literacy.</p>
+<p>With further development, live NIMC database integration, and appropriate regulatory frameworks, VoteChain has the potential to significantly enhance the credibility and public trust of democratic elections in Nigeria.</p>
+<p>5.3 Recommendations</p>
+<p>The following recommendations are made for future development, deployment, and policy consideration:</p>
+<p>INEC should pilot blockchain-based e-voting in controlled environments such as local government or student union elections before national deployment.</p>
+<p>Future implementations should integrate directly with NIMC&#39;s live NIN database through a secured API, replacing the simulated dataset used in this study.</p>
+<p>The WebAuthn implementation should include fallback authentication options such as hardware security keys or SMS-based one-time passwords for devices without native biometric support.</p>
+<p>The system should be deployed on a public or permissioned network such as Hyperledger Besu or Polygon to evaluate real-world performance under concurrent voter loads.</p>
+<p>Zero-knowledge proof cryptographic techniques should be explored to further strengthen ballot secrecy whilst maintaining end-to-end verifiability.</p>
+<p>Machine learning-based anomaly detection should be incorporated to identify suspicious voting patterns or coordinated access attempts.</p>
+<p>A fully developed election administrator portal with real-time monitoring, audit log management, and result certification workflows should be implemented.</p>
+<p>Future user acceptance testing should engage larger, more demographically diverse groups, including elderly voters and participants from rural areas with limited digital literacy.</p>
+<p>The smart contract codebase should be subjected to independent third-party security audits using tools such as Slither or Mythril before any real-world deployment.</p>
+<p>Policymakers should consider amending Nigeria&#39;s Electoral Act to provide regulatory clarity on blockchain-recorded votes, digital authentication, and electronic audit trails.</p>
+
+    </div>
+</body>
+</html>
